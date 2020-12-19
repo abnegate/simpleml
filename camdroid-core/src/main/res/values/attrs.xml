@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CameraOverlay">
+        <attr name="overlay_alpha" format="float" />
+        <attr name="overlay_borderWidth" format="integer" />
+    </declare-styleable>
+</resources>
