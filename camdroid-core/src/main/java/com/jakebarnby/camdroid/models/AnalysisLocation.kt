@@ -1,6 +1,6 @@
 package com.jakebarnby.camdroid.models
 
-enum class AnalysisService {
+enum class AnalysisLocation {
     DEVICE,
     FIREBASE_VISION
 }

@@ -1,7 +1,5 @@
 package com.jakebarnby.camdroid.text.analyzer
 
-import android.annotation.SuppressLint
-import androidx.camera.core.ExperimentalGetImage
 import com.google.mlkit.nl.languageid.IdentifiedLanguage
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentificationOptions
@@ -9,7 +7,8 @@ import com.google.mlkit.nl.languageid.LanguageIdentifier
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class LocalLanguageAnalyzer: Analyzer<LanguageIdentifier, LanguageIdentificationOptions, String, List<IdentifiedLanguage>>() {
+class LocalLanguageAnalyzer :
+    Analyzer<LanguageIdentifier, LanguageIdentificationOptions, String, List<IdentifiedLanguage>>() {
 
     override fun initialize(detectorOptions: LanguageIdentificationOptions?) {
         options = detectorOptions ?: LanguageIdentificationOptions.Builder()
@@ -24,7 +23,7 @@ class LocalLanguageAnalyzer: Analyzer<LanguageIdentifier, LanguageIdentification
             ?.await() ?: return
 
         if (results.isNotEmpty()) {
-            onAnalyzed?.invoke(results)
+            onAnalysisResult?.invoke(results)
         }
     }
 }

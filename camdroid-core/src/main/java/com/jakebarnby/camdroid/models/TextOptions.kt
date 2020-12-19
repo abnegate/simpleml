@@ -1,5 +1,10 @@
 package com.jakebarnby.camdroid.models
 
-data class TextOptions(
-    val detectorMode: DetectorMode = DetectorMode.STREAM
-)
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+
+class TextOptions(
+    val minimumConfidence: Float = 0.5f,
+    detectorMode: DetectorMode = DetectorMode.STREAM,
+    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : OptionsBase(detectorMode, detectionDispatcher)

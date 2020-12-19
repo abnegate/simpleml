@@ -9,17 +9,17 @@ import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler
-import com.jakebarnby.camdroid.ImageClassifier
-import com.jakebarnby.camdroid.classification.ClassificationResult
-import com.jakebarnby.camdroid.classification.PhotoClassifier
+import com.jakebarnby.camdroid.Classification
+import com.jakebarnby.camdroid.classification.ClassifiedResult
+import com.jakebarnby.camdroid.classification.Classifier
+import com.jakebarnby.camdroid.helpers.CoroutineBase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
-import kotlin.coroutines.CoroutineContext
 
 
 /**
- * A [PhotoClassifier] implementation using [FirebaseVisionImageLabeler] to classify photos.
+ * A [Classifier] implementation using [FirebaseVisionImageLabeler] to classify photos.
  *
  *
  * Created by jbarnby 14/5/2018.
@@ -27,23 +27,17 @@ import kotlin.coroutines.CoroutineContext
 class FirebaseCloudClassifier(
     activity: Activity,
     private val options: FirebaseVisionCloudImageLabelerOptions?,
-    private val configuration: ImageClassifier.Configuration
-) : PhotoClassifier, CoroutineScope {
+    private val configuration: Classification.Configuration
+) : Classifier, CoroutineBase {
 
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
-
-    companion object {
-        /**
-         * Minimum percent accuracy to be considered a match
-         */
-        private const val TAG = "FirebaseMLVision"
-
-        private const val RESULTS_TO_SHOW = 5
-    }
+    override val job = Job()
 
     private lateinit var detector: FirebaseVisionImageLabeler
+
+    companion object {
+        private const val TAG = "FirebaseMLVision"
+        private const val RESULTS_TO_SHOW = 5
+    }
 
     init {
         FirebaseApp.initializeApp(activity)
@@ -61,7 +55,7 @@ class FirebaseCloudClassifier(
 
     override suspend fun classify(
         album: Collection<Bitmap>,
-        onNextClassificationResult: (Collection<ClassificationResult>) -> Unit
+        onNextClassificationResult: (Collection<ClassifiedResult>) -> Unit
     ) {
         val tasks = mutableListOf<Deferred<Any>>()
         for (bitmap in album) {
@@ -70,7 +64,7 @@ class FirebaseCloudClassifier(
         tasks.awaitAll()
     }
 
-    override suspend fun classify(bitmap: Bitmap): Collection<ClassificationResult> =
+    override suspend fun classify(bitmap: Bitmap): Collection<ClassifiedResult> =
         classifyFrameAsync(bitmap).await()
 
     override fun close() {
@@ -99,7 +93,7 @@ class FirebaseCloudClassifier(
             }
             .take(RESULTS_TO_SHOW)
             .map {
-                ClassificationResult(it.text, it.confidence)
+                ClassifiedResult(it.text, it.confidence)
             }
     }
 }

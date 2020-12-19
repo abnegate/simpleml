@@ -11,7 +11,8 @@ import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class RemoteLabelAnalyzer : Analyzer<FirebaseVisionImageLabeler, FirebaseVisionCloudImageLabelerOptions, ImageProxy, List<FirebaseVisionImageLabel>>() {
+class RemoteLabelAnalyzer :
+    Analyzer<FirebaseVisionImageLabeler, FirebaseVisionCloudImageLabelerOptions, ImageProxy, List<FirebaseVisionImageLabel>>() {
 
     override fun initialize(detectorOptions: FirebaseVisionCloudImageLabelerOptions?) {
         options = detectorOptions ?: FirebaseVisionCloudImageLabelerOptions.Builder()
@@ -33,11 +34,11 @@ class RemoteLabelAnalyzer : Analyzer<FirebaseVisionImageLabeler, FirebaseVisionC
             ?.await() ?: return
 
         if (results.isNotEmpty()) {
-            onAnalyzed?.invoke(results)
+            onAnalysisResult?.invoke(results)
         }
     }
 
-    private fun degreesToFirebaseRotation(degrees: Int): Int = when(degrees) {
+    private fun degreesToFirebaseRotation(degrees: Int): Int = when (degrees) {
         0 -> FirebaseVisionImageMetadata.ROTATION_0
         90 -> FirebaseVisionImageMetadata.ROTATION_90
         180 -> FirebaseVisionImageMetadata.ROTATION_180

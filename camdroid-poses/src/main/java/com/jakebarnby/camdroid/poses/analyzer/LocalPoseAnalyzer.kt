@@ -3,12 +3,16 @@ package com.jakebarnby.camdroid.poses.analyzer
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.pose.*
+import com.google.mlkit.vision.pose.PoseDetection
+import com.google.mlkit.vision.pose.PoseDetector
+import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
+import com.google.mlkit.vision.pose.PoseLandmark
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class LocalPoseAnalyzer : Analyzer<PoseDetector, PoseDetectorOptionsBase, ImageProxy, List<PoseLandmark>>() {
+class LocalPoseAnalyzer :
+    Analyzer<PoseDetector, PoseDetectorOptionsBase, ImageProxy, List<PoseLandmark>>() {
 
     @ExperimentalGetImage
     override suspend fun analyzeInput(input: ImageProxy) {
@@ -22,7 +26,7 @@ class LocalPoseAnalyzer : Analyzer<PoseDetector, PoseDetectorOptionsBase, ImageP
             ?.allPoseLandmarks ?: return
 
         if (results.isNotEmpty()) {
-            onAnalyzed?.invoke(results)
+            onAnalysisResult?.invoke(results)
         }
     }
 

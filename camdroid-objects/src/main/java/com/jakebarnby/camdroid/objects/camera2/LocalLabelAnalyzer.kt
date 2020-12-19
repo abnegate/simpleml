@@ -10,12 +10,13 @@ import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class LocalLabelAnalyzer : Analyzer<ImageLabeler, ImageLabelerOptions, ImageProxy, List<ImageLabel>>() {
+class LocalLabelAnalyzer :
+    Analyzer<ImageLabeler, ImageLabelerOptions, ImageProxy, List<ImageLabel>>() {
 
     override fun initialize(detectorOptions: ImageLabelerOptions?) {
         options = detectorOptions ?: ImageLabelerOptions.Builder()
-             .setConfidenceThreshold(0.7f)
-             .build()
+            .setConfidenceThreshold(0.7f)
+            .build()
 
         detector = ImageLabeling.getClient(options!!)
     }
@@ -32,7 +33,7 @@ class LocalLabelAnalyzer : Analyzer<ImageLabeler, ImageLabelerOptions, ImageProx
             ?.await() ?: return
 
         if (results.isNotEmpty()) {
-            onAnalyzed?.invoke(results)
+            onAnalysisResult?.invoke(results)
         }
     }
 }

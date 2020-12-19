@@ -1,5 +1,9 @@
 package com.jakebarnby.camdroid.models
 
-data class PoseOptions(
-    val detectorMode: DetectorMode = DetectorMode.STREAM
-)
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+
+class PoseOptions(
+    detectorMode: DetectorMode = DetectorMode.STREAM,
+    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : OptionsBase(detectorMode, detectionDispatcher)

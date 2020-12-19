@@ -4,31 +4,28 @@ import android.graphics.Bitmap
 
 /**
  * Classifies a collection of images and returns the results.
- *
- *
- * Created by jbarnby 14/5/2018.
  */
-interface PhotoClassifier  {
+interface Classifier {
 
     suspend fun initialise()
 
     /**
-     * Get a set of [ClassificationResult] by classifying the given collection of [Bitmap].
+     * Get a set of [ClassifiedResult] by classifying the given collection of [Bitmap].
      *
      * @param album                      The album for which to get labels for each photo from.
      * @param onNextClassificationResult Result listener to post results to on completion.
      */
     suspend fun classify(
         album: Collection<Bitmap>,
-        onNextClassificationResult: (Collection<ClassificationResult>) -> Unit
+        onNextClassificationResult: (Collection<ClassifiedResult>) -> Unit
     )
 
     /**
-     * Get a set of [ClassificationResult] by classifying the given collection of [Bitmap].
+     * Get a set of [ClassifiedResult] by classifying the given collection of [Bitmap].
      *
      * @param bitmap                 The image for which to get labels for.
      */
-    suspend fun classify(bitmap: Bitmap): Collection<ClassificationResult>
+    suspend fun classify(bitmap: Bitmap): Collection<ClassifiedResult>
 
     /**
      * Release managed resources.

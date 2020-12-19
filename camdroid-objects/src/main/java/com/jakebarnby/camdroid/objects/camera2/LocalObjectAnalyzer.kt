@@ -10,7 +10,8 @@ import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class LocalObjectAnalyzer: Analyzer<ObjectDetector, ObjectDetectorOptions, ImageProxy, List<DetectedObject>>() {
+class LocalObjectAnalyzer :
+    Analyzer<ObjectDetector, ObjectDetectorOptions, ImageProxy, List<DetectedObject>>() {
 
     override fun initialize(detectorOptions: ObjectDetectorOptions?) {
         options = detectorOptions ?: ObjectDetectorOptions.Builder()
@@ -32,7 +33,7 @@ class LocalObjectAnalyzer: Analyzer<ObjectDetector, ObjectDetectorOptions, Image
             ?.await() ?: return
 
         if (results.isNotEmpty()) {
-            onAnalyzed?.invoke(results)
+            onAnalysisResult?.invoke(results)
         }
     }
 }

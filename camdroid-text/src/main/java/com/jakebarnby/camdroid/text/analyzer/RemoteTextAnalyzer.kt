@@ -11,7 +11,8 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class RemoteTextAnalyzer: Analyzer<FirebaseVisionTextRecognizer, FirebaseVisionCloudTextRecognizerOptions, ImageProxy, FirebaseVisionText>() {
+class RemoteTextAnalyzer :
+    Analyzer<FirebaseVisionTextRecognizer, FirebaseVisionCloudTextRecognizerOptions, ImageProxy, FirebaseVisionText>() {
 
     override fun initialize(detectorOptions: FirebaseVisionCloudTextRecognizerOptions?) {
         options = detectorOptions ?: FirebaseVisionCloudTextRecognizerOptions.Builder()
@@ -31,10 +32,10 @@ class RemoteTextAnalyzer: Analyzer<FirebaseVisionTextRecognizer, FirebaseVisionC
             ?.processImage(mlImage)
             ?.await() ?: return
 
-        onAnalyzed?.invoke(results)
+        onAnalysisResult?.invoke(results)
     }
 
-    private fun degreesToFirebaseRotation(degrees: Int): Int = when(degrees) {
+    private fun degreesToFirebaseRotation(degrees: Int): Int = when (degrees) {
         0 -> FirebaseVisionImageMetadata.ROTATION_0
         90 -> FirebaseVisionImageMetadata.ROTATION_90
         180 -> FirebaseVisionImageMetadata.ROTATION_180

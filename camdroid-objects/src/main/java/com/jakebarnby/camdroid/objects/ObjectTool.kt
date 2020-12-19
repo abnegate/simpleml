@@ -2,76 +2,118 @@ package com.jakebarnby.camdroid.objects
 
 import android.app.Activity
 import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel
+import com.google.mlkit.vision.label.ImageLabel
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
-import com.jakebarnby.camdroid.analyzer.AnalyzerInteractor
-import com.jakebarnby.camdroid.models.AnalysisService
+import com.jakebarnby.camdroid.analyzer.AnalyzerTool
+import com.jakebarnby.camdroid.models.AnalysisLocation
 import com.jakebarnby.camdroid.models.DetectedObject
+import com.jakebarnby.camdroid.models.ObjectOptions
 import com.jakebarnby.camdroid.objects.camera2.LocalLabelAnalyzer
 import com.jakebarnby.camdroid.objects.camera2.LocalObjectAnalyzer
 import com.jakebarnby.camdroid.objects.camera2.RemoteLabelAnalyzer
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.asExecutor
 
-class ObjectTool : AnalyzerInteractor() {
+class ObjectTool : AnalyzerTool() {
 
     fun detectObjects(
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
-        detectMultiple: Boolean = true
+        options: ObjectOptions = ObjectOptions()
+    ) = when (options.analysisLocation) {
+        AnalysisLocation.DEVICE ->
+            detectObjectsOnDevice(context, onNextResult, options)
+        AnalysisLocation.FIREBASE_VISION ->
+            throw UnsupportedOperationException("No Firebase Vision object detector available.")
+    }
+
+    private fun detectObjectsOnDevice(
+        context: Activity,
+        onNextResult: (List<DetectedObject>) -> Unit,
+        options: ObjectOptions
     ) {
-        val options = ObjectDetectorOptions.Builder()
-            .enableClassification()
-            .setExecutor(IO.asExecutor())
+        val realOptions = ObjectDetectorOptions.Builder()
+            .setExecutor(options.detectionDispatcher.asExecutor())
 
-        if (detectMultiple) {
-            options.enableMultipleObjects()
+        if (options.classificationEnabled) {
+            realOptions.enableClassification()
         }
-
-        startCamera(
+        if (options.detectMultiple) {
+            realOptions.enableMultipleObjects()
+        }
+        detectFromCamera<
+                LocalObjectAnalyzer,
+                ObjectDetectorOptions,
+                List<com.google.mlkit.vision.objects.DetectedObject>>(
             context,
-            LocalObjectAnalyzer::class.java,
-            options.build(),
-            onNextResult
-        )
+            realOptions.build(),
+            { results ->
+                onNextResult(results.map { result ->
+                    DetectedObject().apply {
+                        id = result.trackingId
+                        boundingBox = result.boundingBox
+                        labels = result.labels.map {
+                            Pair(it.text, it.confidence)
+                        }
+                    }
+                })
+            })
     }
 
     fun detectLabels(
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
-        minimumConfidence: Float = 0.5f,
-        analysisService: AnalysisService = AnalysisService.DEVICE
-    ) = when (analysisService) {
-        AnalysisService.DEVICE ->
-            detectLabelsOnDevice(context, onNextResult, minimumConfidence)
-        AnalysisService.FIREBASE_VISION ->
-            detectLabelsFirebaseVision(context, onNextResult, minimumConfidence)
+        options: ObjectOptions = ObjectOptions()
+    ) = when (options.analysisLocation) {
+        AnalysisLocation.DEVICE ->
+            detectLabelsOnDevice(context, onNextResult, options)
+        AnalysisLocation.FIREBASE_VISION ->
+            detectLabelsFirebaseVision(context, onNextResult, options)
     }
 
     private fun detectLabelsOnDevice(
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
-        minimumConfidence: Float = 0.5f,
-    ) = startCamera(
+        options: ObjectOptions
+    ) = detectFromCamera<LocalLabelAnalyzer, ImageLabelerOptions, List<ImageLabel>>(
         context,
-        LocalLabelAnalyzer::class.java,
         ImageLabelerOptions.Builder()
-            .setConfidenceThreshold(minimumConfidence)
+            .setConfidenceThreshold(options.minimumConfidence)
             .setExecutor(IO.asExecutor())
             .build(),
-        onNextResult
+        { results ->
+            onNextResult(results.map { result ->
+                DetectedObject().apply {
+                    labels = listOf(
+                        Pair(result.text, result.confidence)
+                    )
+                }
+            })
+        }
     )
 
     private fun detectLabelsFirebaseVision(
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
-        minimumConfidence: Float = 0.5f
-    ) = startCamera(
+        options: ObjectOptions
+    ) = detectFromCamera<
+            RemoteLabelAnalyzer,
+            FirebaseVisionCloudImageLabelerOptions,
+            List<FirebaseVisionImageLabel>>(
         context,
-        RemoteLabelAnalyzer::class.java,
         FirebaseVisionCloudImageLabelerOptions.Builder()
-            .setConfidenceThreshold(minimumConfidence)
+            .setConfidenceThreshold(options.minimumConfidence)
             .build(),
-        onNextResult
+        { results ->
+            onNextResult(results.map { result ->
+                DetectedObject().apply {
+                    labels = listOf(
+                        Pair(result.text, result.confidence)
+                    )
+                }
+            })
+        }
     )
 }

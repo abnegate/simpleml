@@ -8,7 +8,7 @@ import android.graphics.Rect
  *
  * Created by jbarnby 14/5/2018.
  */
-data class ClassificationResult(
+data class ClassifiedResult(
     /**
      * Object that was classified
      */

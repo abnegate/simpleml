@@ -1,7 +1,12 @@
 package com.jakebarnby.camdroid.models
 
-data class ObjectOptions(
-    val detectorMode: DetectorMode = DetectorMode.STREAM,
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+
+class ObjectOptions(
     val minimumConfidence: Float = 0.5f,
-    val detectMultiple: Boolean = true
-)
+    val classificationEnabled: Boolean = true,
+    val detectMultiple: Boolean = true,
+    detectorMode: DetectorMode = DetectorMode.STREAM,
+    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : OptionsBase(detectorMode, detectionDispatcher)

@@ -1,22 +1,19 @@
 package com.jakebarnby.camdroid.helpers
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import okhttp3.*
 import okio.Okio
 import java.io.File
 import java.io.IOException
-import kotlin.coroutines.CoroutineContext
 
-class FileDownloader : CoroutineScope {
+class FileDownloader : CoroutineBase {
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
+    override val job = Job()
 
-    private val job: Job = Job()
-    private val client: OkHttpClient by lazy { OkHttpClient() }
+    companion object {
+        private val client by lazy { OkHttpClient() }
+    }
 
     @Throws(IOException::class)
     fun fetchAsync(

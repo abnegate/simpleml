@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraSelector
@@ -17,14 +15,19 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.jakebarnby.camdroid.Constants
 import com.jakebarnby.camdroid.R
-import com.jakebarnby.camdroid.camera2.presenter.Camera2Presenter
-import com.jakebarnby.camdroid.camera2.Camera2Contract
 import com.jakebarnby.camdroid.analyzer.Analyzer
+import com.jakebarnby.camdroid.camera2.Camera2Contract
+import com.jakebarnby.camdroid.camera2.presenter.Camera2Presenter
+import com.jakebarnby.camdroid.helpers.BindWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.asExecutor
 import kotlin.coroutines.CoroutineContext
 
 class Camera2Activity<
@@ -32,7 +35,7 @@ class Camera2Activity<
         TOptions,
         TInput,
         TResult,
-        TAnalyzer: Analyzer<TDetector, TOptions, TInput, TResult>>:
+        TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>> :
     AppCompatActivity(), Camera2Contract.View, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -55,11 +58,15 @@ class Camera2Activity<
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera2)
 
-        val clazz = intent.getSerializableExtra(Constants.ANALYZER_CLASS_KEY) as? Class<TAnalyzer>
-        val options = intent.getSerializableExtra(Constants.ANALYZER_OPTIONS_KEY) as? TOptions
-        val onResult = intent.getSerializableExtra(Constants.ANALYZER_RESULT_FUNCTION_KEY) as? (TResult) -> Unit
+        val analyzerWrapper = intent.extras?.getBinder(
+            Constants.ANALYZER_KEY
+        ) as? BindWrapper<TAnalyzer>
+            ?: throw IllegalStateException("No analyzer wrapper found!")
 
-        presenter = Camera2Presenter(clazz!!, options!!, onResult!!)
+        val analyzer = analyzerWrapper.data as? TAnalyzer
+            ?: throw IllegalStateException("No analyzer found!")
+
+        presenter = Camera2Presenter(analyzer)
         previewView = findViewById(R.id.preview)
         overlay = findViewById(R.id.overlay)
         backBtn = findViewById(R.id.btnBack)
@@ -135,13 +142,13 @@ class Camera2Activity<
         preview.setSurfaceProvider(previewView?.surfaceProvider)
 
         val imageAnalysis = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
-            .apply {
-                setAnalyzer(
-                    ContextCompat.getMainExecutor(this@Camera2Activity),
-                    presenter!!.analyzer!!
-                )
-            }
+
+        imageAnalysis.setAnalyzer(
+            IO.asExecutor(),
+            presenter!!.analyzer
+        )
 
         try {
             cameraProvider.unbindAll()
@@ -153,7 +160,6 @@ class Camera2Activity<
             )
         } catch (ex: Exception) {
             Log.e(javaClass.name, "Use case binding failed", ex)
-
         }
     }
 }

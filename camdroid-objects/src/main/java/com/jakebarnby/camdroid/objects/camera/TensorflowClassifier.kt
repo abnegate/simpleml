@@ -20,17 +20,18 @@ import android.graphics.Bitmap
 import android.os.SystemClock
 import android.util.Log
 import com.jakebarnby.camdroid.*
-import com.jakebarnby.camdroid.classification.ClassificationResult
-import com.jakebarnby.camdroid.classification.PhotoClassifier
+import com.jakebarnby.camdroid.classification.ClassifiedResult
+import com.jakebarnby.camdroid.classification.Classifier
+import com.jakebarnby.camdroid.helpers.CoroutineBase
 import com.jakebarnby.camdroid.helpers.FileDownloader
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import org.tensorflow.lite.Interpreter
 import java.io.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Classifies images with Tensorflow Lite.
@@ -38,29 +39,11 @@ import kotlin.coroutines.CoroutineContext
 
 class TensorflowClassifier @Throws(IOException::class) internal constructor(
     private val activity: Activity,
-    private val configuration: ImageClassifier.Configuration,
+    private val configuration: Classification.Configuration,
     private val fileDownloader: FileDownloader
-) : PhotoClassifier, CoroutineScope {
-    companion object {
+) : Classifier, CoroutineBase {
 
-        internal const val DIM_IMG_SIZE_X = 224
-        internal const val DIM_IMG_SIZE_Y = 224
-
-        private const val TAG = "TfLite"
-        private const val RESULTS_TO_SHOW = 5
-
-        // Dimensions of inputs
-        private const val DIM_BATCH_SIZE = 1
-        private const val DIM_PIXEL_SIZE = 3
-        private const val IMAGE_MEAN = 128
-        private const val IMAGE_STD = 128.0f
-        private const val FILTER_STAGES = 3
-        private const val FILTER_FACTOR = 0.4f
-    }
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
-    private val job = Job()
+    override val job = Job()
 
     // Preallocated buffers for storing image data in
     private val intValues = IntArray(DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y)
@@ -81,40 +64,54 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
         o1.value.compareTo(o2.value)
     }
 
+    companion object {
+        internal const val DIM_IMG_SIZE_X = 224
+        internal const val DIM_IMG_SIZE_Y = 224
+
+        private const val TAG = "TfLite"
+        private const val RESULTS_TO_SHOW = 5
+
+        // Dimensions of inputs
+        private const val DIM_BATCH_SIZE = 1
+        private const val DIM_PIXEL_SIZE = 3
+        private const val IMAGE_MEAN = 128
+        private const val IMAGE_STD = 128.0f
+        private const val FILTER_STAGES = 3
+        private const val FILTER_FACTOR = 0.4f
+    }
+
     override suspend fun initialise() {
-        coroutineScope {
-            launch {
-                listOf(
-                    initModelAsync {},
-                    initLabelsAsync {}
-                ).awaitAll()
+        launch {
+            listOf(
+                initModelAsync {},
+                initLabelsAsync {}
+            ).awaitAll()
 
-                listOf(async {
-                    val modelFile = loadModelFileAsync(activity).await()
-                    tflite = Interpreter(modelFile)
-                }, async {
-                    val labels = loadLabelListAsync(activity).await()
-                    labelList = labels
-                }).awaitAll()
+            listOf(async(IO) {
+                val modelFile = loadModelFileAsync(activity).await() ?: return@async
+                tflite = Interpreter(modelFile)
+            }, async(IO) {
+                labelList = loadLabelListAsync(activity).await()
+            }).awaitAll()
 
-                imgData = ByteBuffer.allocateDirect(
-                    4 * DIM_BATCH_SIZE
-                            * DIM_IMG_SIZE_X
-                            * DIM_IMG_SIZE_Y
-                            * DIM_PIXEL_SIZE
-                )
-                imgData.order(ByteOrder.nativeOrder())
-                labelProbArray = Array(1) { FloatArray(labelList.size) }
-                filterLabelProbArray = Array(FILTER_STAGES) { FloatArray(labelList.size) }
-            }
+            imgData = ByteBuffer.allocateDirect(
+                4 * DIM_BATCH_SIZE
+                        * DIM_IMG_SIZE_X
+                        * DIM_IMG_SIZE_Y
+                        * DIM_PIXEL_SIZE
+            )
+            imgData.order(ByteOrder.nativeOrder())
+            labelProbArray = Array(1) { FloatArray(labelList.size) }
+            filterLabelProbArray = Array(FILTER_STAGES) { FloatArray(labelList.size) }
         }
     }
 
     private fun initModelAsync(
         onProgress: (Int) -> Unit
-    ) = async {
+    ) = async(IO) {
         if (configuration.modelUrl != null
-            && !configuration.modelUrl!!.contains("http")) {
+            && !configuration.modelUrl!!.contains("http")
+        ) {
             modelPath = configuration.modelUrl!!
             return@async
         }
@@ -129,9 +126,10 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
 
     private fun initLabelsAsync(
         onProgress: (Int) -> Unit
-    ) = async {
+    ) = async(IO) {
         if (configuration.labelUrl != null
-            && !configuration.labelUrl!!.contains("http")) {
+            && !configuration.labelUrl!!.contains("http")
+        ) {
             labelPath = configuration.labelUrl!!
             return@async
         }
@@ -146,13 +144,13 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
 
     override suspend fun classify(
         album: Collection<Bitmap>,
-        onNextClassificationResult: (Collection<ClassificationResult>) -> Unit
+        onNextClassificationResult: (Collection<ClassifiedResult>) -> Unit
     ) {
         album.map { classifyFrameAsync(it) }.awaitAll()
     }
 
 
-    override suspend fun classify(bitmap: Bitmap): Collection<ClassificationResult> =
+    override suspend fun classify(bitmap: Bitmap): Collection<ClassifiedResult> =
         classifyFrameAsync(bitmap).await()
 
     override fun close() {
@@ -188,14 +186,20 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
             }
         }
         // Copy the last stage filter output back to `labelProbArray`.
-        System.arraycopy(filterLabelProbArray[FILTER_STAGES - 1], 0, labelProbArray[0], 0, numLabels)
+        System.arraycopy(
+            filterLabelProbArray[FILTER_STAGES - 1],
+            0,
+            labelProbArray[0],
+            0,
+            numLabels
+        )
     }
 
     /**
      * Reads label list from Assets.
      */
     @Throws(IOException::class)
-    private fun loadLabelListAsync(activity: Activity) = async {
+    private fun loadLabelListAsync(activity: Activity) = async(IO) {
         val labelList = mutableListOf<String>()
 
         if (remoteLabels) {
@@ -212,14 +216,14 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
             }
             reader.close()
         }
-       return@async labelList
+        return@async labelList
     }
 
     /**
      * Memory-map the model file in Assets.
      */
     @Throws(IOException::class)
-    private fun loadModelFileAsync(activity: Activity) = async {
+    private fun loadModelFileAsync(activity: Activity) = async(IO) {
         val inputStream: FileInputStream
         val startOffset: Long
         val declaredLength: Long
@@ -269,7 +273,7 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
     /**
      * Prints top-K labels, to be shown in UI as the results.
      */
-    private fun fetchResults(): Collection<ClassificationResult> {
+    private fun fetchResults(): Collection<ClassifiedResult> {
         for (i in labelList.indices) {
             sortedLabels.add(
                 AbstractMap.SimpleEntry(labelList[i], labelProbArray[0][i])
@@ -281,7 +285,7 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
             }
             .take(RESULTS_TO_SHOW)
             .map {
-                ClassificationResult(it.key, it.value)
+                ClassifiedResult(it.key, it.value)
             }
     }
 }

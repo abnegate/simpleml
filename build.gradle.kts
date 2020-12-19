@@ -13,7 +13,7 @@ buildscript {
 
 configure(subprojects.filter { it.name.startsWith("camdroid") }) {
     afterEvaluate {
-        extra["group"] =  "com.jakebarnby.camdroid"
+        extra["group"] = "com.jakebarnby.camdroid"
         apply(from = "../deploy.gradle.kts")
     }
 }
@@ -38,4 +38,4 @@ allprojects {
 
 tasks.register<Delete>("clean").configure {
     delete(rootProject.buildDir)
- }
+}

@@ -16,7 +16,7 @@ interface Camera2Contract {
 
     interface Presenter<TDetector, TOptions, TInput, TResult> {
         var view: View?
-        var analyzer: Analyzer<TDetector, TOptions, TInput, TResult>?
+        var analyzer: Analyzer<TDetector, TOptions, TInput, TResult>
 
         fun subscribe(view: View)
         fun unsubscribe()

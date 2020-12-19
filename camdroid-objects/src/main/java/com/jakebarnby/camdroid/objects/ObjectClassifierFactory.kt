@@ -1,13 +1,15 @@
 package com.jakebarnby.camdroid.objects
 
 import android.app.Activity
-import com.jakebarnby.camdroid.ImageClassifier
-import com.jakebarnby.camdroid.classification.PhotoClassifier
+import com.jakebarnby.camdroid.Classification
+import com.jakebarnby.camdroid.classification.Classifier
 import com.jakebarnby.camdroid.classification.ClassifierType
+import com.jakebarnby.camdroid.helpers.FileDownloader
 import com.jakebarnby.camdroid.objects.camera.FirebaseCloudClassifier
 import com.jakebarnby.camdroid.objects.camera.TensorflowClassifier
-import com.jakebarnby.camdroid.helpers.FileDownloader
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
 
@@ -21,8 +23,8 @@ class ObjectClassifierFactory : CoroutineScope {
     companion object {
         fun getFromConfiguration(
             activity: Activity,
-            configuration: ImageClassifier.Configuration
-        ) : PhotoClassifier = when (configuration.classifier) {
+            configuration: Classification.Configuration
+        ): Classifier = when (configuration.classifier) {
             ClassifierType.FIREBASE_CLOUD -> FirebaseCloudClassifier(
                 activity,
                 null,

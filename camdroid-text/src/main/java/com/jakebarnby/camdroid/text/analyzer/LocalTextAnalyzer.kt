@@ -10,7 +10,7 @@ import com.google.mlkit.vision.text.TextRecognizerOptions
 import com.jakebarnby.camdroid.analyzer.Analyzer
 import kotlinx.coroutines.tasks.await
 
-class LocalTextAnalyzer: Analyzer<TextRecognizer, TextRecognizerOptions, ImageProxy, Text>() {
+class LocalTextAnalyzer : Analyzer<TextRecognizer, TextRecognizerOptions, ImageProxy, Text>() {
 
     override fun initialize(detectorOptions: TextRecognizerOptions?) {
         options = detectorOptions ?: TextRecognizerOptions.Builder()
@@ -30,6 +30,6 @@ class LocalTextAnalyzer: Analyzer<TextRecognizer, TextRecognizerOptions, ImagePr
             ?.process(mlImage)
             ?.await() ?: return
 
-        onAnalyzed?.invoke(results)
+        onAnalysisResult?.invoke(results)
     }
 }

@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import com.google.mlkit.vision.objects.DetectedObject
 import com.jakebarnby.camdroid.camera2.view.GraphicOverlay
-import java.util.Locale
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
