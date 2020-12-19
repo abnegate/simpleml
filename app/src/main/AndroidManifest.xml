@@ -25,7 +25,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.jakebarnby.samplecamdroid.MainActivity2" />
+        <activity
+            android:theme="@style/MaterialTheme"
+            android:name="com.jakebarnby.samplecamdroid.MainActivity2" />
 
     </application>
 

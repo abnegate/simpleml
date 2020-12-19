@@ -23,8 +23,8 @@ class LocalObjectAnalyzerFragment : Camera2Fragment<
 {
     companion object {
         fun newInstance(
-            options: ObjectOptions,
-            onNextResult: (List<DetectedObject>) -> Unit
+            onNextResult: (List<DetectedObject>) -> Unit,
+            options: ObjectOptions = ObjectOptions()
         ) = LocalObjectAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalObjectAnalyzer().apply {
                 onAnalysisResult = { results ->

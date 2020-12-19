@@ -18,8 +18,8 @@ class LocalTextAnalyzerFragment :
     Camera2Fragment<LocalTextAnalyzer, TextRecognizer, TextRecognizerOptions, ImageProxy, Text>() {
     companion object {
         fun newInstance(
-            options: TextOptions,
-            onNextResult: (DetectedText) -> Unit
+            onNextResult: (DetectedText) -> Unit,
+            options: TextOptions = TextOptions()
         ) = LocalTextAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalTextAnalyzer().apply {
                 onAnalysisResult = {

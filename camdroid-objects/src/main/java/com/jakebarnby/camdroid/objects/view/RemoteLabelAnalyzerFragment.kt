@@ -23,8 +23,8 @@ class RemoteLabelAnalyzerFragment : Camera2Fragment<
 {
     companion object {
         fun newInstance(
-            options: ObjectOptions,
-            onNextResult: (List<DetectedObject>) -> Unit
+            onNextResult: (List<DetectedObject>) -> Unit,
+            options: ObjectOptions = ObjectOptions()
         ) = RemoteLabelAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(RemoteLabelAnalyzer().apply {
                 onAnalysisResult = { results ->

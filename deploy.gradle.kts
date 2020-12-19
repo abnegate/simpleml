@@ -30,11 +30,10 @@ configure<PublishingExtension> {
                     .getByName("releaseCompileClasspath")
                     .resolvedConfiguration
                     .firstLevelModuleDependencies.forEach {
-                        dependencies
-                            .appendNode("dependency")
-                            .appendNode("groupId", it.moduleGroup)
-                            .appendNode("artifactId", it.moduleName)
-                            .appendNode("version", it.moduleVersion)
+                        val dependency = dependencies.appendNode("dependency")
+                        dependency.appendNode("groupId", it.moduleGroup)
+                        dependency.appendNode("artifactId", it.moduleName)
+                        dependency.appendNode("version", it.moduleVersion)
                     }
             }
         }

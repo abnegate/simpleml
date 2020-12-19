@@ -18,8 +18,8 @@ class RemoteTextAnalyzerFragment :
     Camera2Fragment<RemoteTextAnalyzer, FirebaseVisionTextRecognizer, FirebaseVisionCloudTextRecognizerOptions, ImageProxy, FirebaseVisionText>() {
     companion object {
         fun newInstance(
-            options: TextOptions,
-            onNextResult: (DetectedText) -> Unit
+            onNextResult: (DetectedText) -> Unit,
+            options: TextOptions = TextOptions()
         ) = RemoteTextAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(RemoteTextAnalyzer().apply {
                 onAnalysisResult = {

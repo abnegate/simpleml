@@ -23,8 +23,8 @@ class LocalPoseAnalyzerFragment : Camera2Fragment<
 {
     companion object {
         fun newInstance(
-            options: PoseOptions,
-            onNextResult: (List<DetectedPose>) -> Unit
+            onNextResult: (List<DetectedPose>) -> Unit,
+            options: PoseOptions = PoseOptions(),
         ) = LocalPoseAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalPoseAnalyzer().apply {
                 onAnalysisResult = { results ->

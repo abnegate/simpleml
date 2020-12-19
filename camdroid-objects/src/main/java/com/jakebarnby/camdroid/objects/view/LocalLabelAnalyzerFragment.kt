@@ -23,8 +23,8 @@ class LocalLabelAnalyzerFragment : Camera2Fragment<
 {
     companion object {
         fun newInstance(
-            options: ObjectOptions,
-            onNextResult: (List<DetectedObject>) -> Unit
+            onNextResult: (List<DetectedObject>) -> Unit,
+            options: ObjectOptions = ObjectOptions()
         ) = LocalLabelAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalLabelAnalyzer().apply {
                 onAnalysisResult = { results ->

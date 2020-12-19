@@ -18,8 +18,8 @@ class LocalLanguageAnalyzerFragment :
     companion object {
         fun newInstance(
             text: String,
-            options: TextOptions,
-            onNextResult: (DetectedText) -> Unit
+            onNextResult: (DetectedText) -> Unit,
+            options: TextOptions = TextOptions()
         ) = LocalTextAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalLanguageAnalyzer().apply {
                 onAnalysisResult = {
