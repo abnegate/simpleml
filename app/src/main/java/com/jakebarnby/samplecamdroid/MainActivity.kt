@@ -1,7 +1,9 @@
 package com.jakebarnby.samplecamdroid
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.jakebarnby.camdroid.Classification
 import com.jakebarnby.camdroid.classification.ClassifierType
@@ -15,7 +17,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startPoseDetector()
+        findViewById<Button>(R.id.btnObject).setOnClickListener {
+            startObjectDetector()
+        }
+        findViewById<Button>(R.id.btnText).setOnClickListener {
+            startTextDetector()
+        }
+        findViewById<Button>(R.id.btnPose).setOnClickListener {
+            startPoseDetector()
+        }
+        findViewById<Button>(R.id.btnFragment).setOnClickListener {
+            goToFragment()
+        }
     }
 
     fun startClassifier() {
@@ -51,5 +64,11 @@ class MainActivity : AppCompatActivity() {
         TextTool().detectTexts(this, { result ->
             Log.i(javaClass.name, result.toString())
         })
+    }
+
+    private fun goToFragment() {
+        startActivity(
+            Intent(this, MainActivity2::class.java)
+        )
     }
 }

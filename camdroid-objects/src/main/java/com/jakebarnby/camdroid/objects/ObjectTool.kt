@@ -1,20 +1,26 @@
 package com.jakebarnby.camdroid.objects
 
 import android.app.Activity
+import androidx.camera.core.ImageProxy
 import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions
 import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler
 import com.google.mlkit.vision.label.ImageLabel
+import com.google.mlkit.vision.label.ImageLabeler
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
+import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import com.jakebarnby.camdroid.analyzer.AnalyzerTool
 import com.jakebarnby.camdroid.models.AnalysisLocation
 import com.jakebarnby.camdroid.models.DetectedObject
 import com.jakebarnby.camdroid.models.ObjectOptions
-import com.jakebarnby.camdroid.objects.camera2.LocalLabelAnalyzer
-import com.jakebarnby.camdroid.objects.camera2.LocalObjectAnalyzer
-import com.jakebarnby.camdroid.objects.camera2.RemoteLabelAnalyzer
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.asExecutor
+import com.jakebarnby.camdroid.objects.analyzer.LocalLabelAnalyzer
+import com.jakebarnby.camdroid.objects.analyzer.LocalObjectAnalyzer
+import com.jakebarnby.camdroid.objects.analyzer.RemoteLabelAnalyzer
+import com.jakebarnby.camdroid.objects.extensions.DetectedObjectExtensions.toDetectedObject
+import com.jakebarnby.camdroid.objects.extensions.ObjectOptionsExtensions.toFirebaseVisionImageLabelerRecognizerOptions
+import com.jakebarnby.camdroid.objects.extensions.ObjectOptionsExtensions.toImageLabelerOptions
+import com.jakebarnby.camdroid.objects.extensions.ObjectOptionsExtensions.toObjectDetectorOptions
 
 class ObjectTool : AnalyzerTool() {
 
@@ -34,31 +40,16 @@ class ObjectTool : AnalyzerTool() {
         onNextResult: (List<DetectedObject>) -> Unit,
         options: ObjectOptions
     ) {
-        val realOptions = ObjectDetectorOptions.Builder()
-            .setExecutor(options.detectionDispatcher.asExecutor())
-
-        if (options.classificationEnabled) {
-            realOptions.enableClassification()
-        }
-        if (options.detectMultiple) {
-            realOptions.enableMultipleObjects()
-        }
-        detectFromCamera<
+        startCameraActivity<
                 LocalObjectAnalyzer,
+                ObjectDetector,
                 ObjectDetectorOptions,
+                ImageProxy,
                 List<com.google.mlkit.vision.objects.DetectedObject>>(
             context,
-            realOptions.build(),
+            options.toObjectDetectorOptions(),
             { results ->
-                onNextResult(results.map { result ->
-                    DetectedObject().apply {
-                        id = result.trackingId
-                        boundingBox = result.boundingBox
-                        labels = result.labels.map {
-                            Pair(it.text, it.confidence)
-                        }
-                    }
-                })
+                onNextResult(results.map { it.toDetectedObject() })
             })
     }
 
@@ -77,20 +68,16 @@ class ObjectTool : AnalyzerTool() {
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
         options: ObjectOptions
-    ) = detectFromCamera<LocalLabelAnalyzer, ImageLabelerOptions, List<ImageLabel>>(
+    ) = startCameraActivity<
+            LocalLabelAnalyzer,
+            ImageLabeler,
+            ImageLabelerOptions,
+            ImageProxy,
+            List<ImageLabel>>(
         context,
-        ImageLabelerOptions.Builder()
-            .setConfidenceThreshold(options.minimumConfidence)
-            .setExecutor(IO.asExecutor())
-            .build(),
+        options.toImageLabelerOptions(),
         { results ->
-            onNextResult(results.map { result ->
-                DetectedObject().apply {
-                    labels = listOf(
-                        Pair(result.text, result.confidence)
-                    )
-                }
-            })
+            onNextResult(results.map { it.toDetectedObject() })
         }
     )
 
@@ -98,22 +85,16 @@ class ObjectTool : AnalyzerTool() {
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
         options: ObjectOptions
-    ) = detectFromCamera<
+    ) = startCameraActivity<
             RemoteLabelAnalyzer,
+            FirebaseVisionImageLabeler,
             FirebaseVisionCloudImageLabelerOptions,
+            ImageProxy,
             List<FirebaseVisionImageLabel>>(
         context,
-        FirebaseVisionCloudImageLabelerOptions.Builder()
-            .setConfidenceThreshold(options.minimumConfidence)
-            .build(),
+        options.toFirebaseVisionImageLabelerRecognizerOptions(),
         { results ->
-            onNextResult(results.map { result ->
-                DetectedObject().apply {
-                    labels = listOf(
-                        Pair(result.text, result.confidence)
-                    )
-                }
-            })
+            onNextResult(results.map { it.toDetectedObject() })
         }
     )
 }

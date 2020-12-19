@@ -2,12 +2,10 @@ package com.jakebarnby.camdroid.camera2.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraX
@@ -15,8 +13,9 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import com.jakebarnby.camdroid.Constants.ANALYZER_KEY
 import com.jakebarnby.camdroid.R
 import com.jakebarnby.camdroid.analyzer.Analyzer
@@ -28,46 +27,51 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asExecutor
 
-class Camera2Activity<
+open class Camera2Fragment<
         TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
         TOptions,
         TInput,
         TResult> :
-    AppCompatActivity(), Camera2Contract.View, CoroutineBase {
+    Fragment(R.layout.fragment_camera2), Camera2Contract.View, CoroutineBase {
 
     override val job = Job()
 
     companion object {
         const val CAMERA_PERMISSION_CODE = 0x01
+
+        fun <TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
+                TDetector,
+                TOptions,
+                TInput,
+                TResult> newInstance(analyzer: TAnalyzer) =
+            Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult>().apply {
+                arguments = bundleOf(ANALYZER_KEY to analyzer)
+            }
     }
 
     private var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
 
     private var previewView: PreviewView? = null
     private var overlay: GraphicOverlay? = null
-    private var backBtn: ImageButton? = null
 
-    @SuppressLint("RestrictedApi")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera2)
 
-        val analyzerWrapper = intent.extras?.getBinder(ANALYZER_KEY) as? BindWrapper<TAnalyzer>
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val analyzerWrapper = arguments?.getBinder(ANALYZER_KEY) as? BindWrapper<TAnalyzer>
             ?: throw IllegalStateException("No analyzer wrapper found!")
 
         val analyzer = analyzerWrapper.data as? TAnalyzer
             ?: throw IllegalStateException("No analyzer found!")
 
         presenter = Camera2Presenter(analyzer)
-        previewView = findViewById(R.id.preview)
-        overlay = findViewById(R.id.overlay)
-        backBtn = findViewById(R.id.btnBack)
+        previewView = view.findViewById(R.id.preview)
+        overlay = view.findViewById(R.id.overlay)
 
-        backBtn?.setOnClickListener { onBackPressed() }
-
+        @SuppressLint("RestrictedApi")
         if (!CameraX.isInitialized()) {
-            CameraX.initialize(applicationContext, Camera2Config.defaultConfig())
+            CameraX.initialize(requireContext().applicationContext, Camera2Config.defaultConfig())
         }
 
         startCamera()
@@ -82,8 +86,7 @@ class Camera2Activity<
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera()
             } else {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
+                //TODO: Handle permission denied
             }
         }
     }
@@ -99,13 +102,13 @@ class Camera2Activity<
     }
 
     override fun checkCameraPermission(): Boolean {
+        val context = requireContext()
         if (ContextCompat.checkSelfPermission(
-                this,
+                context,
                 Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                this,
+            requestPermissions(
                 arrayOf(Manifest.permission.CAMERA),
                 CAMERA_PERMISSION_CODE
             )
@@ -115,15 +118,16 @@ class Camera2Activity<
     }
 
     override fun startCamera() {
+        val context = requireContext()
         if (!checkCameraPermission()) {
             return
         }
         previewView?.post {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             cameraProviderFuture.addListener({
                 val cameraProvider = cameraProviderFuture.get()
                 bindPreview(cameraProvider)
-            }, ContextCompat.getMainExecutor(this))
+            }, ContextCompat.getMainExecutor(context))
         }
     }
 

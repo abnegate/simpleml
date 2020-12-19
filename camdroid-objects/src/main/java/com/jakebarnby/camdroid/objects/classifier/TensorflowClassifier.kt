@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package com.jakebarnby.camdroid.objects.camera
+package com.jakebarnby.camdroid.objects.classifier
 
 import android.app.Activity
 import android.graphics.Bitmap
