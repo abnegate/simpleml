@@ -5,5 +5,6 @@ import kotlinx.coroutines.Dispatchers
 
 class PoseOptions(
     detectorMode: DetectorMode = DetectorMode.STREAM,
-    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : OptionsBase(detectorMode, detectionDispatcher)
+    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    analysisLocation: AnalysisLocation = AnalysisLocation.DEVICE
+) : OptionsBase(detectorMode, detectionDispatcher, analysisLocation)

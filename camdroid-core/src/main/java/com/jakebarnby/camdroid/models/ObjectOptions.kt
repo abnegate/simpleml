@@ -8,5 +8,6 @@ class ObjectOptions(
     val classificationEnabled: Boolean = true,
     val detectMultiple: Boolean = true,
     detectorMode: DetectorMode = DetectorMode.STREAM,
-    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : OptionsBase(detectorMode, detectionDispatcher)
+    detectionDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    analysisLocation: AnalysisLocation = AnalysisLocation.DEVICE
+) : OptionsBase(detectorMode, detectionDispatcher, analysisLocation)
