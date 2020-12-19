@@ -8,7 +8,7 @@ plugins {
 
 ext {
     set("archive", "camdroid-objects")
-    set("version", "1.0.0-alpha01")
+    set("version", rootProject.extra["objectsVersion"])
 }
 
 android {
@@ -49,7 +49,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("com.google.android.material:material:1.2.1")
 
-    api(project(":camdroid-core"))
+    api("com.jakebarnby.camdroid:camdroid-core:${rootProject.extra["coreVersion"]}")
 
     // Firebase Vision
     implementation(platform("com.google.firebase:firebase-bom:26.1.1"))

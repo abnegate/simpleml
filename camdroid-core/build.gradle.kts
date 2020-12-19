@@ -9,7 +9,7 @@ plugins {
 
 ext {
     set("archive", "camdroid-core")
-    set("version", "1.0.0-alpha01")
+    set("version", rootProject.extra["coreVersion"])
 }
 
 android {

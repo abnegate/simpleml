@@ -1,5 +1,4 @@
 buildscript {
-    val kotlin_version by extra("1.4.21")
     repositories {
         google()
         jcenter()
@@ -10,6 +9,11 @@ buildscript {
         classpath("com.google.gms:google-services:4.3.4")
     }
 }
+
+extra["coreVersion"] =  "1.0.0-alpha02"
+extra["objectsVersion"] = "1.0.0-alpha02"
+extra["posesVersion"] =  "1.0.0-alpha02"
+extra["textVersion"] =  "1.0.0-alpha02"
 
 configure(subprojects.filter { it.name.startsWith("camdroid") }) {
     afterEvaluate {
