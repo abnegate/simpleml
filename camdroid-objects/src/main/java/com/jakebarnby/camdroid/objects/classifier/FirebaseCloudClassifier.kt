@@ -1,4 +1,4 @@
-package com.jakebarnby.camdroid.objects.camera
+package com.jakebarnby.camdroid.objects.classifier
 
 import android.app.Activity
 import android.graphics.Bitmap

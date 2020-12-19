@@ -55,6 +55,9 @@ dependencies {
     implementation("com.google.android.material:material:1.2.1")
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
 
+    implementation("androidx.core:core-ktx:1.3.2")
+    implementation("androidx.fragment:fragment-ktx:1.2.5")
+
     // CameraX
     api("androidx.camera:camera-core:1.0.0-rc01")
     api("androidx.camera:camera-camera2:1.0.0-rc01")

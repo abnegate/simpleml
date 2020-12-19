@@ -1,4 +1,4 @@
-package com.jakebarnby.camdroid.objects.camera2
+package com.jakebarnby.camdroid.objects.analyzer
 
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy

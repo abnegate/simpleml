@@ -1,4 +1,4 @@
-package com.jakebarnby.camdroid.objects.camera2
+package com.jakebarnby.camdroid.objects.analyzer
 
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
@@ -38,7 +38,7 @@ class RemoteLabelAnalyzer :
         }
     }
 
-    private fun degreesToFirebaseRotation(degrees: Int): Int = when (degrees) {
+    private fun degreesToFirebaseRotation(degrees: Int) = when (degrees) {
         0 -> FirebaseVisionImageMetadata.ROTATION_0
         90 -> FirebaseVisionImageMetadata.ROTATION_90
         180 -> FirebaseVisionImageMetadata.ROTATION_180
