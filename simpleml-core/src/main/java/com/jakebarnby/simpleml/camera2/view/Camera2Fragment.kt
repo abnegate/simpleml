@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.camera.camera2.Camera2Config
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraX
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
@@ -33,27 +30,21 @@ open class Camera2Fragment<
         TOptions,
         TInput,
         TResult> :
-    Fragment(R.layout.fragment_camera2), Camera2Contract.View, CoroutineBase {
+    Fragment(R.layout.fragment_camera2),
+    Camera2Contract.View<TDetector, TOptions, TInput, TResult>,
+    CoroutineBase {
 
     override val job = Job()
 
     companion object {
         const val CAMERA_PERMISSION_CODE = 0x01
-
-        fun <TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
-                TDetector,
-                TOptions,
-                TInput,
-                TResult> newInstance(analyzer: TAnalyzer) =
-            Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult>().apply {
-                arguments = bundleOf(ANALYZER_KEY to analyzer)
-            }
     }
 
-    private var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
-
-    private var previewView: PreviewView? = null
-    private var overlay: GraphicOverlay? = null
+    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
+    override var previewView: PreviewView? = null
+    override var overlay: GraphicOverlay? = null
+    override var cameraProvider: ProcessCameraProvider? = null
+    override var imageCaptureProvider: ImageCapture? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,35 +116,23 @@ open class Camera2Fragment<
         previewView?.post {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             cameraProviderFuture.addListener({
-                val cameraProvider = cameraProviderFuture.get()
-                bindPreview(cameraProvider)
+                cameraProvider = cameraProviderFuture.get()
+                presenter?.onBindPreview(view?.display?.rotation ?: 0)
             }, ContextCompat.getMainExecutor(context))
         }
     }
 
-    override fun bindPreview(cameraProvider: ProcessCameraProvider) {
-        val preview: Preview = Preview.Builder()
-            .setTargetName("Preview")
-            .build()
+    override fun capturePreview(options: ImageCapture.OutputFileOptions) {
+        presenter?.onCapture(options)
+    }
 
-        preview.setSurfaceProvider(previewView?.surfaceProvider)
-
-        val imageAnalysis = ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .build()
-
-        imageAnalysis.setAnalyzer(
-            IO.asExecutor(),
-            presenter!!.analyzer
-        )
-
+    override fun bindCameraToLifecycle(vararg useCases: UseCase) {
         try {
-            cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(
+            cameraProvider?.unbindAll()
+            cameraProvider?.bindToLifecycle(
                 this,
                 CameraSelector.DEFAULT_BACK_CAMERA,
-                preview,
-                imageAnalysis
+                *useCases
             )
         } catch (ex: Exception) {
             Log.e(javaClass.name, "Use case binding failed", ex)

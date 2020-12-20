@@ -1,6 +1,6 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
-import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
+import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 
 plugins {

@@ -2,7 +2,9 @@ package com.jakebarnby.simpleml.text.view
 
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.view.Camera2Fragment
-import com.jakebarnby.simpleml.models.*
+import com.jakebarnby.simpleml.models.AnalysisLocation
+import com.jakebarnby.simpleml.models.DetectedText
+import com.jakebarnby.simpleml.models.TextOptions
 
 open class LanguageAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,

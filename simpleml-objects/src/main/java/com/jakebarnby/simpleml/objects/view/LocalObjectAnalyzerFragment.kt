@@ -18,8 +18,7 @@ class LocalObjectAnalyzerFragment : ObjectAnalyzerFragment<
         ObjectDetector,
         ObjectDetectorOptions,
         ImageProxy,
-        List<com.google.mlkit.vision.objects.DetectedObject>>()
-{
+        List<com.google.mlkit.vision.objects.DetectedObject>>() {
     companion object {
         fun newInstance(
             onNextResult: (List<DetectedObject>) -> Unit,

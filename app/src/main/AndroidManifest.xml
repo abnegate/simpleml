@@ -26,8 +26,8 @@
         </activity>
 
         <activity
-            android:theme="@style/MaterialTheme"
-            android:name="com.jakebarnby.samplesimpleml.MainActivity2" />
+            android:name="com.jakebarnby.samplesimpleml.MainActivity2"
+            android:theme="@style/MaterialTheme" />
 
     </application>
 

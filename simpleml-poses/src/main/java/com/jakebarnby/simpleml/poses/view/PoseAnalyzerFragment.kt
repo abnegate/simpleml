@@ -3,7 +3,9 @@ package com.jakebarnby.simpleml.poses.view
 import androidx.camera.core.ImageProxy
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.view.Camera2Fragment
-import com.jakebarnby.simpleml.models.*
+import com.jakebarnby.simpleml.models.AnalysisLocation
+import com.jakebarnby.simpleml.models.DetectedPose
+import com.jakebarnby.simpleml.models.PoseOptions
 import java.io.Closeable
 
 open class PoseAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,

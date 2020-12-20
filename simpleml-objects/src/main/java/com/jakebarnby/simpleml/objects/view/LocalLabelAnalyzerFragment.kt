@@ -19,8 +19,7 @@ class LocalLabelAnalyzerFragment : Camera2Fragment<
         ImageLabeler,
         ImageLabelerOptions,
         ImageProxy,
-        List<ImageLabel>>()
-{
+        List<ImageLabel>>() {
     companion object {
         fun newInstance(
             onNextResult: (List<DetectedObject>) -> Unit,

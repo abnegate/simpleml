@@ -18,8 +18,7 @@ class RemoteLabelAnalyzerFragment : ObjectAnalyzerFragment<
         FirebaseVisionImageLabeler,
         FirebaseVisionCloudImageLabelerOptions,
         ImageProxy,
-        List<FirebaseVisionImageLabel>>() 
-{
+        List<FirebaseVisionImageLabel>>() {
     companion object {
         fun newInstance(
             onNextResult: (List<DetectedObject>) -> Unit,

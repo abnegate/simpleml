@@ -2,7 +2,9 @@ package com.jakebarnby.simpleml.text.view
 
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.view.Camera2Fragment
-import com.jakebarnby.simpleml.models.*
+import com.jakebarnby.simpleml.models.AnalysisLocation
+import com.jakebarnby.simpleml.models.DetectedText
+import com.jakebarnby.simpleml.models.TextOptions
 
 open class TextAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
@@ -15,7 +17,10 @@ open class TextAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TInput
             options: TextOptions = TextOptions()
         ) = when (options.analysisLocation) {
             AnalysisLocation.DEVICE -> LocalTextAnalyzerFragment.newInstance(onNextResult, options)
-            AnalysisLocation.FIREBASE_VISION -> RemoteTextAnalyzerFragment.newInstance(onNextResult, options)
+            AnalysisLocation.FIREBASE_VISION -> RemoteTextAnalyzerFragment.newInstance(
+                onNextResult,
+                options
+            )
         }
     }
 }

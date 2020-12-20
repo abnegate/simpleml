@@ -10,7 +10,7 @@
 
     <application>
         <activity
-            android:theme="@style/MaterialTheme"
-            android:name="com.jakebarnby.simpleml.camera2.view.Camera2Activity" />
+            android:name="com.jakebarnby.simpleml.camera2.view.Camera2Activity"
+            android:theme="@style/MaterialTheme" />
     </application>
 </manifest>

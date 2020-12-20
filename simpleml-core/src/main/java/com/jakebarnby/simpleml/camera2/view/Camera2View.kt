@@ -2,46 +2,39 @@ package com.jakebarnby.simpleml.camera2.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.Camera2Config
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraX
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.UseCase
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.jakebarnby.simpleml.Constants.ANALYZER_KEY
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.jakebarnby.simpleml.R
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.Camera2Contract
-import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
-import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.helpers.CoroutineBase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.asExecutor
 
-class Camera2Activity<
-        TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
+class Camera2View<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
         TOptions,
         TInput,
         TResult> :
-    AppCompatActivity(),
+    ConstraintLayout,
+    LifecycleOwner,
     Camera2Contract.View<TDetector, TOptions, TInput, TResult>,
     CoroutineBase {
-
-    override val job = Job()
-
-    companion object {
-        const val CAMERA_PERMISSION_CODE = 0x01
-    }
 
     override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
     override var previewView: PreviewView? = null
@@ -49,68 +42,64 @@ class Camera2Activity<
     override var cameraProvider: ProcessCameraProvider? = null
     override var imageCaptureProvider: ImageCapture? = null
 
-    private var backBtn: ImageButton? = null
+    override val job = Job()
 
-    @SuppressLint("RestrictedApi")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera2)
+    constructor(context: Context) : super(context)
 
-        val analyzerWrapper = intent.extras?.getBinder(ANALYZER_KEY) as? BindWrapper<TAnalyzer>
-            ?: throw IllegalStateException("No analyzer wrapper found!")
+    constructor(
+        context: Context,
+        attrs: AttributeSet
+    ) : super(context, attrs)
 
-        val analyzer = analyzerWrapper.data as? TAnalyzer
-            ?: throw IllegalStateException("No analyzer found!")
+    constructor(
+        context: Context,
+        attrs: AttributeSet,
+        defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr)
 
-        presenter = Camera2Presenter(analyzer)
+    constructor(
+        context: Context,
+        attrs: AttributeSet,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private fun init() {
+        inflate(context, R.layout.view_camera2, this)
+
         previewView = findViewById(R.id.preview)
         overlay = findViewById(R.id.overlay)
-        backBtn = findViewById(R.id.btnBack)
 
-        backBtn?.setOnClickListener { onBackPressed() }
-
+        @SuppressLint("RestrictedApi")
         if (!CameraX.isInitialized()) {
-            CameraX.initialize(applicationContext, Camera2Config.defaultConfig())
+            CameraX.initialize(context.applicationContext, Camera2Config.defaultConfig())
         }
 
         startCamera()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCamera()
-            } else {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
         presenter?.subscribe(this)
     }
 
-    override fun onPause() {
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
         presenter?.unsubscribe()
-        super.onPause()
     }
+
+    override fun getLifecycle() = (context as LifecycleOwner).lifecycle
 
     override fun checkCameraPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
-                this,
+                context,
                 Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
+                context as? AppCompatActivity ?: return false,
                 arrayOf(Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_CODE
+                Camera2Fragment.CAMERA_PERMISSION_CODE
             )
             return false
         }
@@ -122,17 +111,11 @@ class Camera2Activity<
             return
         }
         previewView?.post {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             cameraProviderFuture.addListener({
                 cameraProvider = cameraProviderFuture.get()
-                presenter?.onBindPreview(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        display?.rotation ?: 0
-                    } else {
-                        windowManager.defaultDisplay.rotation
-                    }
-                )
-            }, ContextCompat.getMainExecutor(this))
+                presenter?.onBindPreview(display.rotation)
+            }, ContextCompat.getMainExecutor(context))
         }
     }
 

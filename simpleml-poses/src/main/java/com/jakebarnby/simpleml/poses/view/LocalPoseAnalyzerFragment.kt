@@ -6,7 +6,6 @@ import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.jakebarnby.simpleml.Constants
-import com.jakebarnby.simpleml.camera2.view.Camera2Fragment
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.models.DetectedPose
 import com.jakebarnby.simpleml.models.PoseOptions
@@ -19,8 +18,7 @@ class LocalPoseAnalyzerFragment : PoseAnalyzerFragment<
         PoseDetector,
         PoseDetectorOptionsBase,
         ImageProxy,
-        List<PoseLandmark>>()
-{
+        List<PoseLandmark>>() {
     companion object {
         fun newInstance(
             onNextResult: (List<DetectedPose>) -> Unit,

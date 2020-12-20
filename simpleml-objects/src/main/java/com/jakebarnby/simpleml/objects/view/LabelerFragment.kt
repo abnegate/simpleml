@@ -17,7 +17,10 @@ open class LabelerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TRe
             options: ObjectOptions = ObjectOptions()
         ) = when (options.analysisLocation) {
             AnalysisLocation.DEVICE -> LocalLabelAnalyzerFragment.newInstance(onNextResult, options)
-            AnalysisLocation.FIREBASE_VISION -> RemoteLabelAnalyzerFragment.newInstance(onNextResult, options)
+            AnalysisLocation.FIREBASE_VISION -> RemoteLabelAnalyzerFragment.newInstance(
+                onNextResult,
+                options
+            )
         }
     }
 }

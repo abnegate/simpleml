@@ -35,21 +35,4 @@ abstract class AnalyzerTool : CoroutineBase {
         }
         context.startActivity(intent)
     }
-
-    companion object {
-        inline fun <reified TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
-                TDetector,
-                TOptions,
-                TInput,
-                TResult> getCameraFragment(
-            options: TOptions,
-            noinline onNextResult: (TResult) -> Unit
-        ): Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult> {
-            val analyzer = TAnalyzer::class.java.newInstance().apply {
-                onAnalysisResult = onNextResult
-                initialize(options)
-            }
-            return Camera2Fragment.newInstance(analyzer)
-        }
-    }
 }

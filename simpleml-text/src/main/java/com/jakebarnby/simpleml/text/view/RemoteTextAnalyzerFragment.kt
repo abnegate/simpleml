@@ -6,7 +6,6 @@ import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptio
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer
 import com.jakebarnby.simpleml.Constants
-import com.jakebarnby.simpleml.camera2.view.Camera2Fragment
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.models.DetectedText
 import com.jakebarnby.simpleml.models.TextOptions
@@ -19,8 +18,7 @@ class RemoteTextAnalyzerFragment : TextAnalyzerFragment<
         FirebaseVisionTextRecognizer,
         FirebaseVisionCloudTextRecognizerOptions,
         ImageProxy,
-        FirebaseVisionText>()
-{
+        FirebaseVisionText>() {
     companion object {
         fun newInstance(
             onNextResult: (DetectedText) -> Unit,
