@@ -1,4 +1,4 @@
-package com.jakebarnby.samplecamdroid
+package com.jakebarnby.samplesimpleml
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

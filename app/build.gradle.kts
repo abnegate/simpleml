@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
+    kotlin("kapt")
 }
 
 android {
@@ -26,6 +26,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        dataBinding = true
+    }
     packagingOptions {
         exclude("META-INF/proguard/androidx-annotations.pro")
     }
@@ -42,8 +45,6 @@ android {
 dependencies {
 
     implementation(kotlin("stdlib", org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION))
-    implementation(kotlin("coroutines-core", "1.3.7"))
-    implementation(kotlin("coroutines-android", "1.3.3"))
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
 
@@ -51,8 +52,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 
-    implementation("com.jakebarnby.camdroid:camdroid-core:1.0.0-alpha01")
-    implementation("com.jakebarnby.camdroid:camdroid-objects:1.0.0-alpha01")
-    implementation("com.jakebarnby.camdroid:camdroid-poses:1.0.0-alpha01")
-    implementation("com.jakebarnby.camdroid:camdroid-text:1.0.0-alpha01")
+    implementation(project(":simpleml-objects"))
+    implementation(project(":simpleml-poses"))
+    implementation(project(":simpleml-text"))
 }

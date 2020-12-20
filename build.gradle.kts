@@ -6,18 +6,20 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:4.1.1")
         classpath(kotlin("gradle-plugin", version = "1.4.21"))
+        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
         classpath("com.google.gms:google-services:4.3.4")
     }
 }
 
-extra["coreVersion"] =  "1.0.0-alpha02"
-extra["objectsVersion"] = "1.0.0-alpha02"
-extra["posesVersion"] =  "1.0.0-alpha02"
-extra["textVersion"] =  "1.0.0-alpha02"
+extra["coreVersion"] =  "1.0.0-alpha03"
+extra["objectsVersion"] = "1.0.0-alpha03"
+extra["posesVersion"] =  "1.0.0-alpha03"
+extra["textVersion"] =  "1.0.0-alpha03"
 
-configure(subprojects.filter { it.name.startsWith("camdroid") }) {
+configure(subprojects.filter { it.name.startsWith("simpleml") }) {
     afterEvaluate {
-        extra["group"] = "com.jakebarnby.camdroid"
+        extra["group"] = "com.jakebarnby.simpleml"
+        apply(plugin = "com.bintray.jfrog")
         apply(from = "../deploy.gradle.kts")
     }
 }
@@ -30,6 +32,7 @@ allprojects {
         val JB_REPO: String by project
         val JB_REPO_USER: String by project
         val JB_REPO_PASSWORD: String by project
+        val SIMPLEML_REPO: String by project
 
         maven(JB_REPO) {
             credentials {
@@ -37,6 +40,7 @@ allprojects {
                 password = JB_REPO_PASSWORD
             }
         }
+        maven(SIMPLEML_REPO)
     }
 }
 
