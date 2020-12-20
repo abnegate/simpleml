@@ -1,7 +1,7 @@
-include(":camdroid-text")
 include(
     ":app",
-    ":camdroid-core",
-    ":camdroid-objects",
-    ":camdroid-poses"
+    ":simpleml-core",
+    ":simpleml-objects",
+    ":simpleml-poses",
+    ":simpleml-text"
 )

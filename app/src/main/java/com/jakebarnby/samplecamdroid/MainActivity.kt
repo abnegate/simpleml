@@ -1,15 +1,15 @@
-package com.jakebarnby.samplecamdroid
+package com.jakebarnby.samplesimpleml
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.jakebarnby.camdroid.Classification
-import com.jakebarnby.camdroid.classification.ClassifierType
-import com.jakebarnby.camdroid.objects.ObjectTool
-import com.jakebarnby.camdroid.poses.PoseTool
-import com.jakebarnby.camdroid.text.TextTool
+import com.jakebarnby.simpleml.Classification
+import com.jakebarnby.simpleml.classification.ClassifierType
+import com.jakebarnby.simpleml.objects.ObjectDetector
+import com.jakebarnby.simpleml.poses.PoseDetector
+import com.jakebarnby.simpleml.text.TextDetector
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startObjectDetector() {
-        ObjectTool().detectObjects(this, { results ->
+        ObjectDetector().detectObjects(this, { results ->
             for (result in results) {
                 Log.i(javaClass.name, result.toString())
             }
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startPoseDetector() {
-        PoseTool().detectPoses(this, { results ->
+        PoseDetector().detectPoses(this, { results ->
             for (result in results) {
                 Log.i(javaClass.name, result.toString())
             }
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTextDetector() {
-        TextTool().detectTexts(this, { result ->
+        TextDetector().detectTexts(this, { result ->
             Log.i(javaClass.name, result.toString())
         })
     }
