@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:889551271049:android:fe57338529df823f9b4258",
+        "mobilesdk_app_id": "1:889551271049:android:6337d450e72fb63b9b4258",
         "android_client_info": {
           "package_name": "com.jakebarnby.simpleml.objects"
         }
@@ -36,7 +36,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:889551271049:android:e6ced266746ec3679b4258",
+        "mobilesdk_app_id": "1:889551271049:android:c55d32560ad672bf9b4258",
         "android_client_info": {
           "package_name": "com.jakebarnby.simpleml.poses"
         }
@@ -65,7 +65,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:889551271049:android:3897006ba17e7f1e9b4258",
+        "mobilesdk_app_id": "1:889551271049:android:310d94866b13a4469b4258",
         "android_client_info": {
           "package_name": "com.jakebarnby.simpleml.text"
         }

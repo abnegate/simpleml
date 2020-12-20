@@ -4,9 +4,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.1.1")
+        classpath("com.android.tools.build:gradle:4.2.0-beta02")
         classpath(kotlin("gradle-plugin", version = "1.4.21"))
-        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
         classpath("com.google.gms:google-services:4.3.4")
     }
 }
@@ -15,14 +14,6 @@ extra["coreVersion"] =  "1.0.0-alpha03"
 extra["objectsVersion"] = "1.0.0-alpha03"
 extra["posesVersion"] =  "1.0.0-alpha03"
 extra["textVersion"] =  "1.0.0-alpha03"
-
-configure(subprojects.filter { it.name.startsWith("simpleml") }) {
-    afterEvaluate {
-        extra["group"] = "com.jakebarnby.simpleml"
-        apply(plugin = "com.bintray.jfrog")
-        apply(from = "../deploy.gradle.kts")
-    }
-}
 
 allprojects {
     repositories {
@@ -41,6 +32,13 @@ allprojects {
             }
         }
         maven(SIMPLEML_REPO)
+    }
+}
+
+configure(subprojects.filter { it.name.startsWith("simpleml") }) {
+    afterEvaluate {
+        extra["group"] = "com.jakebarnby.simpleml"
+        //apply(from = "../deploy.gradle.kts")
     }
 }
 
