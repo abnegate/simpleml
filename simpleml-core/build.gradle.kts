@@ -1,8 +1,11 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
+import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
+import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 
 plugins {
     id("com.android.library")
     kotlin("android")
+    id("com.jfrog.bintray") version "1.8.5"
 }
 
 ext {
@@ -71,4 +74,29 @@ dependencies {
     testImplementation("junit:junit:4.13.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+}
+
+bintray {
+    val BINTRAY_USER: String by project
+    val BINTRAY_KEY: String by project
+    val module = project.extra["archive"] as? String
+
+    user = BINTRAY_USER
+    key = BINTRAY_KEY
+    setPublications("aar")
+
+    pkg(delegateClosureOf<PackageConfig> {
+        repo = "SimpleML"
+        name = module
+        userOrg = "jakebarnby"
+        vcsUrl = "https://github.com/abnegate/simpleml.git"
+        setLicenses("GPL-3.0")
+
+        version(delegateClosureOf<VersionConfig> {
+            val version = project.extra["version"] as String
+
+            name = version
+            vcsTag = "${module}/${version}"
+        })
+    })
 }

@@ -1,4 +1,4 @@
-package com.jakebarnby.simpleml
+package com.jakebarnby.simpleml.poses
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
