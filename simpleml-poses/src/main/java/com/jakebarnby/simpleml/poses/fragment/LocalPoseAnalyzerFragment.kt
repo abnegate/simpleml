@@ -7,7 +7,6 @@ import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.jakebarnby.simpleml.Constants
 import com.jakebarnby.simpleml.helpers.BindWrapper
-import com.jakebarnby.simpleml.models.`object`.DetectedObject
 import com.jakebarnby.simpleml.models.pose.DetectedPose
 import com.jakebarnby.simpleml.models.pose.PoseOptions
 import com.jakebarnby.simpleml.poses.analyzer.LocalPoseAnalyzer

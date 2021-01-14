@@ -46,8 +46,10 @@ class FirebaseVisionTextAnalyzerView : Camera2View<FirebaseVisionTextRecognizer,
     override fun init(attrs: AttributeSet) {
         super.init(attrs)
 
-        setAnalyzer<FirebaseVisionTextAnalyzer>((options as TextOptions)
-            .toFirebaseVisionTextRecognizerOptions())
+        setAnalyzer<FirebaseVisionTextAnalyzer>(
+            (options as TextOptions)
+                .toFirebaseVisionTextRecognizerOptions()
+        )
     }
 
     override fun setOnNextDetectionListener(onNext: (DetectedText) -> Unit) {

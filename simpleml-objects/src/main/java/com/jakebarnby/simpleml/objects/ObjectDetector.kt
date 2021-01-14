@@ -14,9 +14,9 @@ import com.jakebarnby.simpleml.analyzer.Detector
 import com.jakebarnby.simpleml.models.`object`.DetectedObject
 import com.jakebarnby.simpleml.models.`object`.ObjectOptions
 import com.jakebarnby.simpleml.models.types.AnalysisLocation
+import com.jakebarnby.simpleml.objects.analyzer.FirebaseVisionLabelAnalyzer
 import com.jakebarnby.simpleml.objects.analyzer.LocalLabelAnalyzer
 import com.jakebarnby.simpleml.objects.analyzer.LocalObjectAnalyzer
-import com.jakebarnby.simpleml.objects.analyzer.FirebaseVisionLabelAnalyzer
 import com.jakebarnby.simpleml.objects.extensions.DetectedObjectExtensions.toDetectedObject
 import com.jakebarnby.simpleml.objects.extensions.ObjectOptionsExtensions.toFirebaseVisionImageLabelerRecognizerOptions
 import com.jakebarnby.simpleml.objects.extensions.ObjectOptionsExtensions.toImageLabelerOptions
