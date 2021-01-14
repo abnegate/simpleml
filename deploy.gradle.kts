@@ -1,6 +1,4 @@
-plugins {
-    `maven-publish`
-}
+apply(plugin = "maven-publish")
 
 configure<PublishingExtension> {
     publications {

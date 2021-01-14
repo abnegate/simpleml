@@ -1,6 +1,6 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
-import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
+import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
     id("com.android.library")
@@ -41,6 +41,10 @@ android {
         noCompress("tflite")
         noCompress("lite")
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -49,8 +53,8 @@ android {
 dependencies {
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.0.0")
 
     implementation("androidx.appcompat:appcompat:1.2.0")
@@ -90,6 +94,8 @@ bintray {
         name = module
         userOrg = "jakebarnby"
         vcsUrl = "https://github.com/abnegate/simpleml.git"
+        publish = true
+        publicDownloadNumbers = true
         setLicenses("GPL-3.0")
 
         version(delegateClosureOf<VersionConfig> {

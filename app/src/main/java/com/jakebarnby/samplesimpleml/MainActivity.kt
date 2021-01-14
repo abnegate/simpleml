@@ -29,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnFragment).setOnClickListener {
             goToFragment()
         }
+        findViewById<Button>(R.id.btnView).setOnClickListener {
+            goToView()
+        }
     }
 
     fun startClassifier() {
@@ -68,7 +71,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToFragment() {
         startActivity(
-            Intent(this, MainActivity2::class.java)
+            Intent(this, FragmentActivity::class.java)
+        )
+    }
+
+    private fun goToView() {
+        startActivity(
+            Intent(this, ViewActivity::class.java)
         )
     }
 }

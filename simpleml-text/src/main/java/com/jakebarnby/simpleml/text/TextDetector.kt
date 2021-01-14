@@ -8,20 +8,20 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptions
-import com.jakebarnby.simpleml.analyzer.AnalyzerTool
-import com.jakebarnby.simpleml.models.AnalysisLocation
-import com.jakebarnby.simpleml.models.DetectedText
-import com.jakebarnby.simpleml.models.TextOptions
+import com.jakebarnby.simpleml.analyzer.Detector
+import com.jakebarnby.simpleml.models.text.DetectedText
+import com.jakebarnby.simpleml.models.text.TextOptions
+import com.jakebarnby.simpleml.models.types.AnalysisLocation
+import com.jakebarnby.simpleml.text.analyzer.FirebaseVisionTextAnalyzer
 import com.jakebarnby.simpleml.text.analyzer.LocalLanguageAnalyzer
 import com.jakebarnby.simpleml.text.analyzer.LocalTextAnalyzer
-import com.jakebarnby.simpleml.text.analyzer.RemoteTextAnalyzer
 import com.jakebarnby.simpleml.text.extensions.DetectedTextExtensions.toDetectedText
 import com.jakebarnby.simpleml.text.extensions.TextOptionsExtensions.toFirebaseVisionTextRecognizerOptions
 import com.jakebarnby.simpleml.text.extensions.TextOptionsExtensions.toLanguageIdentificationOptions
 import com.jakebarnby.simpleml.text.extensions.TextOptionsExtensions.toTextRecognizerOptions
 import kotlinx.coroutines.launch
 
-class TextDetector : AnalyzerTool() {
+class TextDetector : Detector() {
 
     fun detectTexts(
         context: Activity,
@@ -39,7 +39,7 @@ class TextDetector : AnalyzerTool() {
         onNextResult: (DetectedText) -> Unit,
         options: TextOptions
     ) {
-        startCameraActivity<LocalTextAnalyzer, TextRecognizer, TextRecognizerOptions, ImageProxy, Text>(
+        startDetectorActivity<LocalTextAnalyzer, TextRecognizer, TextRecognizerOptions, ImageProxy, Text>(
             context,
             options.toTextRecognizerOptions(), {
                 onNextResult(it.toDetectedText())
@@ -52,7 +52,7 @@ class TextDetector : AnalyzerTool() {
         onNextResult: (DetectedText) -> Unit,
         options: TextOptions
     ) {
-        startCameraActivity<RemoteTextAnalyzer, FirebaseVisionTextRecognizer, FirebaseVisionCloudTextRecognizerOptions, ImageProxy, FirebaseVisionText>(
+        startDetectorActivity<FirebaseVisionTextAnalyzer, FirebaseVisionTextRecognizer, FirebaseVisionCloudTextRecognizerOptions, ImageProxy, FirebaseVisionText>(
             context,
             options.toFirebaseVisionTextRecognizerOptions(), {
                 onNextResult(it.toDetectedText())

@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -11,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraX
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
@@ -24,17 +25,19 @@ import com.jakebarnby.simpleml.camera2.Camera2Contract
 import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.helpers.CoroutineBase
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asExecutor
+import java.io.File
 
 class Camera2Activity<
         TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
         TOptions,
         TInput,
-        TResult> :
-    AppCompatActivity(), Camera2Contract.View, CoroutineBase {
+        TResult,
+        TOutResult> :
+    AppCompatActivity(),
+    Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>,
+    CoroutineBase {
 
     override val job = Job()
 
@@ -42,10 +45,13 @@ class Camera2Activity<
         const val CAMERA_PERMISSION_CODE = 0x01
     }
 
-    private var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
+    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? =
+        null
+    override var previewView: PreviewView? = null
+    override var overlay: GraphicOverlay? = null
+    override var cameraProvider: ProcessCameraProvider? = null
+    override var imageCaptureProvider: ImageCapture? = null
 
-    private var previewView: PreviewView? = null
-    private var overlay: GraphicOverlay? = null
     private var backBtn: ImageButton? = null
 
     @SuppressLint("RestrictedApi")
@@ -121,38 +127,47 @@ class Camera2Activity<
         previewView?.post {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
             cameraProviderFuture.addListener({
-                val cameraProvider = cameraProviderFuture.get()
-                bindPreview(cameraProvider)
+                cameraProvider = cameraProviderFuture.get()
+                presenter?.onBindPreview(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        display?.rotation ?: 0
+                    } else {
+                        windowManager.defaultDisplay.rotation
+                    }
+                )
             }, ContextCompat.getMainExecutor(this))
         }
     }
 
-    override fun bindPreview(cameraProvider: ProcessCameraProvider) {
-        val preview: Preview = Preview.Builder()
-            .setTargetName("Preview")
-            .build()
+    override suspend fun takePicture(outputPath: String) =
+        presenter?.onCapture(ImageCapture.OutputFileOptions.Builder(File(outputPath)).build())
 
-        preview.setSurfaceProvider(previewView?.surfaceProvider)
-
-        val imageAnalysis = ImageAnalysis.Builder()
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .build()
-
-        imageAnalysis.setAnalyzer(
-            IO.asExecutor(),
-            presenter!!.analyzer
+    override fun takePicture(
+        outputPath: String,
+        onSuccess: (String?) -> Unit,
+        onError: (Throwable?) -> Unit
+    ) {
+        presenter?.onCapture(
+            ImageCapture.OutputFileOptions.Builder(File(outputPath)).build(),
+            onSuccess,
+            onError
         )
+    }
 
+    override fun bindCameraToLifecycle(vararg useCases: UseCase) {
         try {
-            cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(
+            cameraProvider?.unbindAll()
+            cameraProvider?.bindToLifecycle(
                 this,
                 CameraSelector.DEFAULT_BACK_CAMERA,
-                preview,
-                imageAnalysis
+                *useCases
             )
         } catch (ex: Exception) {
             Log.e(javaClass.name, "Use case binding failed", ex)
         }
+    }
+
+    override fun setOnNextDetectionListener(onNext: (TOutResult) -> Unit) {
+        TODO("Not yet implemented")
     }
 }
