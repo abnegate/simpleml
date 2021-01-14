@@ -94,6 +94,8 @@ bintray {
         name = module
         userOrg = "jakebarnby"
         vcsUrl = "https://github.com/abnegate/simpleml.git"
+        publish = true
+        publicDownloadNumbers = true
         setLicenses("GPL-3.0")
 
         version(delegateClosureOf<VersionConfig> {

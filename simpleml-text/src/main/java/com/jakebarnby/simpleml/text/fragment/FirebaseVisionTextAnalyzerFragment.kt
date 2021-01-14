@@ -7,7 +7,6 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer
 import com.jakebarnby.simpleml.Constants
 import com.jakebarnby.simpleml.helpers.BindWrapper
-import com.jakebarnby.simpleml.models.`object`.DetectedObject
 import com.jakebarnby.simpleml.models.text.DetectedText
 import com.jakebarnby.simpleml.models.text.TextOptions
 import com.jakebarnby.simpleml.text.analyzer.FirebaseVisionTextAnalyzer
@@ -27,12 +26,13 @@ class FirebaseVisionTextAnalyzerFragment : TextAnalyzerFragment<
             onNextResult: (DetectedText) -> Unit,
             options: TextOptions = TextOptions()
         ) = FirebaseVisionTextAnalyzerFragment().apply {
-            arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(FirebaseVisionTextAnalyzer().apply {
-                onAnalysisResult = {
-                    onNextResult(it.toDetectedText())
-                }
-                initialize(options.toFirebaseVisionTextRecognizerOptions())
-            }))
+            arguments =
+                bundleOf(Constants.ANALYZER_KEY to BindWrapper(FirebaseVisionTextAnalyzer().apply {
+                    onAnalysisResult = {
+                        onNextResult(it.toDetectedText())
+                    }
+                    initialize(options.toFirebaseVisionTextRecognizerOptions())
+                }))
         }
     }
 

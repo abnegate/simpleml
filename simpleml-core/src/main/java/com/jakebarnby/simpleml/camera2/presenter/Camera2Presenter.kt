@@ -14,7 +14,8 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
     override var analyzer: Analyzer<TDetector, TOptions, TInput, TResult>,
 ) : Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult> {
 
-    override var view: Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>? = null
+    override var view: Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>? =
+        null
 
     override fun subscribe(view: Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>) {
         this.view = view

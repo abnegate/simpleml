@@ -12,7 +12,8 @@ abstract class ObjectAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, 
         TOptions,
         TInput,
         TResult,
-        TOutResult> : Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult, TOutResult>() {
+        TOutResult> :
+    Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult, TOutResult>() {
     companion object {
         fun newInstance(
             onNextResult: (List<DetectedObject>) -> Unit,

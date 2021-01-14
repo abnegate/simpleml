@@ -46,8 +46,10 @@ class FirebaseVisionLabelAnalyzerView : ObjectAnalyzerView<FirebaseVisionImageLa
     override fun init(attrs: AttributeSet) {
         super.init(attrs)
 
-        setAnalyzer<FirebaseVisionLabelAnalyzer>((options as ObjectOptions)
-            .toFirebaseVisionImageLabelerRecognizerOptions())
+        setAnalyzer<FirebaseVisionLabelAnalyzer>(
+            (options as ObjectOptions)
+                .toFirebaseVisionImageLabelerRecognizerOptions()
+        )
     }
 
     override fun setOnNextDetectionListener(onNext: (List<DetectedObject>) -> Unit) {

@@ -26,12 +26,13 @@ class FirebaseVisionLabelAnalyzerFragment : ObjectAnalyzerFragment<
             onNextResult: (List<DetectedObject>) -> Unit,
             options: ObjectOptions = ObjectOptions()
         ) = FirebaseVisionLabelAnalyzerFragment().apply {
-            arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(FirebaseVisionLabelAnalyzer().apply {
-                onAnalysisResult = { results ->
-                    onNextResult(results.map { it.toDetectedObject() })
-                }
-                initialize(options.toFirebaseVisionImageLabelerRecognizerOptions())
-            }))
+            arguments =
+                bundleOf(Constants.ANALYZER_KEY to BindWrapper(FirebaseVisionLabelAnalyzer().apply {
+                    onAnalysisResult = { results ->
+                        onNextResult(results.map { it.toDetectedObject() })
+                    }
+                    initialize(options.toFirebaseVisionImageLabelerRecognizerOptions())
+                }))
         }
     }
 

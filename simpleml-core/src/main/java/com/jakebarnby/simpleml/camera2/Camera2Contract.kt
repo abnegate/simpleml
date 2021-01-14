@@ -1,6 +1,5 @@
 package com.jakebarnby.simpleml.camera2
 
-import android.text.method.Touch
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -16,7 +15,6 @@ interface Camera2Contract {
         var overlay: GraphicOverlay?
         var cameraProvider: ProcessCameraProvider?
         var imageCaptureProvider: ImageCapture?
-
 
 
         fun checkCameraPermission(): Boolean

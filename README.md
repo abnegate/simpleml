@@ -16,24 +16,26 @@ Support planned for:
 
 ## Getting started
 You can choose to detect:
-- Objects
-- Text
-- Poses
+- Objects,
+- Text,
+- or Poses
 
 Where each type has it's own module.
+
+## Installation
 To use a module, add one of the following to your modules `build.gradle`:
 
 ```groovy
   dependencies {
     // ...
-    implementation 'com.jakebarnby:simpleml:simpleml-objects:<version>'
-    implementation 'com.jakebarnby:simpleml:simpleml-text:<version>'
-    implementation 'com.jakebarnby:simpleml:simpleml-poses:<version>'
+    implementation 'com.jakebarnby:simpleml:simpleml-objects:1.0.0-beta01'
+    implementation 'com.jakebarnby:simpleml:simpleml-text:1.0.0-beta01'
+    implementation 'com.jakebarnby:simpleml:simpleml-poses:1.0.0-beta01'
     // ...
   }
 ```
 
-## How to use
+## Usage
 
 There are 3 main ways to use SimpleML:
 
@@ -83,7 +85,7 @@ There are 3 main ways to use SimpleML:
     }
     
     val textAnalyzerFragment = TextAnalyzerFragment.newInstance { result: DetectedText ->
-        Log.e(javaClass.name, result.text ?: "")
+        // Use the results
     }
     
     supportFragmentManager.beginTransaction()
@@ -109,3 +111,31 @@ While easy this method has limited customizability, showing only a full screen c
         // Use the results
     }
 ```
+
+## Development
+
+SimpleML relies heavily on generics. Almost all functionality is extensible via the included base classes:
+
+```kotlin
+class CustomAnalyzer: Analyzer<TDetector, TOptions, TInput, TResult>
+```
+Creating a custom analyzer
+
+```kotlin
+class CustomView: Camera2View<TDetector, TOptions, TInput, TResult, TOutResult>
+```
+Creating a custom view.
+
+```kotlin
+class CustomFragment: Camera2Fragment<CustomAnalyzer,
+     TDetector,
+     TOptions,
+     TInput,
+     TResult,
+     TOutResult>
+```
+Creating a custom fragment
+
+
+
+

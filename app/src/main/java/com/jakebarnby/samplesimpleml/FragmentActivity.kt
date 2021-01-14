@@ -24,18 +24,20 @@ class FragmentActivity : AppCompatActivity(), CoroutineBase {
 
         setContentView(R.layout.activity_fragment)
 
-        val objectAnalyzerFragment = ObjectAnalyzerFragment.newInstance({ results ->
-            Log.e(javaClass.name, results.joinToString {
-                "${it.labels}: ${it.boundingBox}\n"
-            })
-        }, ObjectOptions(
-            minimumConfidence = 0.7f,
-            classificationEnabled = true,
-            detectMultiple = true,
-            analysisMode = AnalysisMode.FRAME_STREAM,
-            analysisDispatcher = AnalysisDispatcher.IO,
-            analysisLocation = AnalysisLocation.DEVICE
-        ))
+        val objectAnalyzerFragment = ObjectAnalyzerFragment.newInstance(
+            { results ->
+                Log.e(javaClass.name, results.joinToString {
+                    "${it.labels}: ${it.boundingBox}\n"
+                })
+            }, ObjectOptions(
+                minimumConfidence = 0.7f,
+                classificationEnabled = true,
+                detectMultiple = true,
+                analysisMode = AnalysisMode.FRAME_STREAM,
+                analysisDispatcher = AnalysisDispatcher.IO,
+                analysisLocation = AnalysisLocation.DEVICE
+            )
+        )
 
         val poseAnalyzerFramgnet = PoseAnalyzerFragment.newInstance({ results ->
             Log.e(javaClass.name, results.joinToString {

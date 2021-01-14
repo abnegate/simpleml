@@ -46,8 +46,10 @@ class LocalPoseAnalyzerView : Camera2View<PoseDetector,
     override fun init(attrs: AttributeSet) {
         super.init(attrs)
 
-        setAnalyzer<LocalPoseAnalyzer>((options as PoseOptions)
-            .toPoseDetectorOptions())
+        setAnalyzer<LocalPoseAnalyzer>(
+            (options as PoseOptions)
+                .toPoseDetectorOptions()
+        )
     }
 
     override fun setOnNextDetectionListener(onNext: (List<DetectedPose>) -> Unit) {

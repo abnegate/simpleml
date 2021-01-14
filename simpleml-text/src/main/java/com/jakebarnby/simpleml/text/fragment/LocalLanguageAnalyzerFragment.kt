@@ -6,7 +6,6 @@ import com.google.mlkit.nl.languageid.LanguageIdentificationOptions
 import com.google.mlkit.nl.languageid.LanguageIdentifier
 import com.jakebarnby.simpleml.Constants
 import com.jakebarnby.simpleml.helpers.BindWrapper
-import com.jakebarnby.simpleml.models.`object`.DetectedObject
 import com.jakebarnby.simpleml.models.text.DetectedLanguage
 import com.jakebarnby.simpleml.models.text.DetectedText
 import com.jakebarnby.simpleml.models.text.TextOptions
@@ -29,12 +28,13 @@ class LocalLanguageAnalyzerFragment : LanguageAnalyzerFragment<
             onNextResult: (DetectedText) -> Unit,
             options: TextOptions = TextOptions()
         ) = LocalTextAnalyzerFragment().apply {
-            arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalLanguageAnalyzer().apply {
-                onAnalysisResult = {
-                    onNextResult(it.toDetectedText(text))
-                }
-                initialize(options.toLanguageIdentificationOptions())
-            }))
+            arguments =
+                bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalLanguageAnalyzer().apply {
+                    onAnalysisResult = {
+                        onNextResult(it.toDetectedText(text))
+                    }
+                    initialize(options.toLanguageIdentificationOptions())
+                }))
         }
     }
 

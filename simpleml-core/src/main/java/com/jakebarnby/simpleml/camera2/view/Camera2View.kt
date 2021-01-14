@@ -37,7 +37,8 @@ abstract class Camera2View<TDetector, TOptions, TInput, TResult, TOutResult> :
     Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>,
     CoroutineBase {
 
-    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? = null
+    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? =
+        null
     override var previewView: PreviewView? = null
     override var overlay: GraphicOverlay? = null
     override var cameraProvider: ProcessCameraProvider? = null

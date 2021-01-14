@@ -46,8 +46,10 @@ class LocalLanguageAnalyzerView : Camera2View<
     override fun init(attrs: AttributeSet) {
         super.init(attrs)
 
-        setAnalyzer<LocalLanguageAnalyzer>((options as TextOptions)
-            .toLanguageIdentificationOptions())
+        setAnalyzer<LocalLanguageAnalyzer>(
+            (options as TextOptions)
+                .toLanguageIdentificationOptions()
+        )
     }
 
     override fun setOnNextDetectionListener(onNext: (List<DetectedLanguage>) -> Unit) {

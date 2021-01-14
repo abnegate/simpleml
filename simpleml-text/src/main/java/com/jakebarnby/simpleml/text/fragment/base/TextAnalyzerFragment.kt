@@ -13,7 +13,8 @@ abstract class TextAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TI
         TOptions,
         TInput,
         TResult,
-        TOutResult> : Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult, TOutResult>() {
+        TOutResult> :
+    Camera2Fragment<TAnalyzer, TDetector, TOptions, TInput, TResult, TOutResult>() {
     companion object {
         fun newInstance(
             onNextResult: (DetectedText) -> Unit,

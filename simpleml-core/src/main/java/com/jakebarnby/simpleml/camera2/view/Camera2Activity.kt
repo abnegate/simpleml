@@ -45,7 +45,8 @@ class Camera2Activity<
         const val CAMERA_PERMISSION_CODE = 0x01
     }
 
-    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? = null
+    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? =
+        null
     override var previewView: PreviewView? = null
     override var overlay: GraphicOverlay? = null
     override var cameraProvider: ProcessCameraProvider? = null

@@ -12,9 +12,9 @@ import com.jakebarnby.simpleml.analyzer.Detector
 import com.jakebarnby.simpleml.models.text.DetectedText
 import com.jakebarnby.simpleml.models.text.TextOptions
 import com.jakebarnby.simpleml.models.types.AnalysisLocation
+import com.jakebarnby.simpleml.text.analyzer.FirebaseVisionTextAnalyzer
 import com.jakebarnby.simpleml.text.analyzer.LocalLanguageAnalyzer
 import com.jakebarnby.simpleml.text.analyzer.LocalTextAnalyzer
-import com.jakebarnby.simpleml.text.analyzer.FirebaseVisionTextAnalyzer
 import com.jakebarnby.simpleml.text.extensions.DetectedTextExtensions.toDetectedText
 import com.jakebarnby.simpleml.text.extensions.TextOptionsExtensions.toFirebaseVisionTextRecognizerOptions
 import com.jakebarnby.simpleml.text.extensions.TextOptionsExtensions.toLanguageIdentificationOptions

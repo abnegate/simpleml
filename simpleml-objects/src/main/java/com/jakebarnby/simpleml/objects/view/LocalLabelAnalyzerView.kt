@@ -47,8 +47,10 @@ class LocalLabelAnalyzerView : LabelAnalyzerView<
     override fun init(attrs: AttributeSet) {
         super.init(attrs)
 
-        setAnalyzer<LocalLabelAnalyzer>((options as ObjectOptions)
-            .toImageLabelerOptions())
+        setAnalyzer<LocalLabelAnalyzer>(
+            (options as ObjectOptions)
+                .toImageLabelerOptions()
+        )
     }
 
     override fun setOnNextDetectionListener(onNext: (List<DetectedObject>) -> Unit) {

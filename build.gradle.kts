@@ -10,10 +10,10 @@ buildscript {
     }
 }
 
-extra["coreVersion"] = "1.0.0-alpha03"
-extra["objectsVersion"] = "1.0.0-alpha03"
-extra["posesVersion"] = "1.0.0-alpha03"
-extra["textVersion"] = "1.0.0-alpha03"
+extra["coreVersion"] = "1.0.0-beta02"
+extra["objectsVersion"] = "1.0.0-beta01"
+extra["posesVersion"] = "1.0.0-beta01"
+extra["textVersion"] = "1.0.0-beta01"
 
 allprojects {
     repositories {

@@ -14,10 +14,10 @@ import com.jakebarnby.simpleml.text.extensions.DetectedTextExtensions.toDetected
 import com.jakebarnby.simpleml.text.extensions.TextOptionsExtensions.toTextRecognizerOptions
 
 class LocalTextAnalyzerView : Camera2View<TextRecognizer,
-    TextRecognizerOptions,
-    ImageProxy,
-    Text,
-    DetectedText> {
+        TextRecognizerOptions,
+        ImageProxy,
+        Text,
+        DetectedText> {
 
     constructor(
         context: Context,
@@ -46,8 +46,10 @@ class LocalTextAnalyzerView : Camera2View<TextRecognizer,
     override fun init(attrs: AttributeSet) {
         super.init(attrs)
 
-        setAnalyzer<LocalTextAnalyzer>((options as TextOptions)
-            .toTextRecognizerOptions())
+        setAnalyzer<LocalTextAnalyzer>(
+            (options as TextOptions)
+                .toTextRecognizerOptions()
+        )
     }
 
     override fun setOnNextDetectionListener(onNext: (DetectedText) -> Unit) {
