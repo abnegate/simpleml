@@ -26,9 +26,12 @@
         </activity>
 
         <activity
-            android:name="com.jakebarnby.samplesimpleml.MainActivity2"
+            android:name="com.jakebarnby.samplesimpleml.FragmentActivity"
             android:theme="@style/MaterialTheme" />
 
+        <activity
+            android:name="com.jakebarnby.samplesimpleml.ViewActivity"
+            android:theme="@style/MaterialTheme" />
     </application>
 
 </manifest>

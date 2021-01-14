@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <Button
         android:id="@+id/btnObject"
         android:layout_width="match_parent"
@@ -26,8 +25,7 @@
         app:layout_constraintBottom_toTopOf="@id/btnPose"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnObject"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/btnObject" />
 
     <Button
         android:id="@+id/btnPose"
@@ -37,18 +35,26 @@
         app:layout_constraintBottom_toTopOf="@id/btnFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnText"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/btnText" />
 
     <Button
         android:id="@+id/btnFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to fragment"
+        android:text="Go to fragment sample"
+        app:layout_constraintBottom_toTopOf="@id/btnView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnPose" />
+
+    <Button
+        android:id="@+id/btnView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to view sample"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnPose"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/btnFragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

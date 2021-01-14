@@ -1,22 +1,22 @@
 package com.jakebarnby.simpleml.camera2.presenter
 
-import android.util.Log
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.Camera2Contract
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.suspendCancellableCoroutine
 
-class Camera2Presenter<TDetector, TOptions, TInput, TResult>(
+class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
     override var analyzer: Analyzer<TDetector, TOptions, TInput, TResult>,
-) : Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult> {
+) : Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult> {
 
-    override var view: Camera2Contract.View<TDetector, TOptions, TInput, TResult>? = null
+    override var view: Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>? = null
 
-    override fun subscribe(view: Camera2Contract.View<TDetector, TOptions, TInput, TResult>) {
+    override fun subscribe(view: Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>) {
         this.view = view
     }
 
@@ -36,7 +36,7 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult>(
             .build()
 
         imageAnalysis.setAnalyzer(
-            Dispatchers.IO.asExecutor(),
+            IO.asExecutor(),
             analyzer
         )
 
@@ -48,7 +48,40 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult>(
         view?.bindCameraToLifecycle(preview, imageAnalysis, imageCapture)
     }
 
-    override fun onCapture(options: ImageCapture.OutputFileOptions) {
-        TODO("Not yet implemented")
+    override suspend fun onCapture(options: ImageCapture.OutputFileOptions) =
+        suspendCancellableCoroutine<String?> {
+            view?.imageCaptureProvider?.takePicture(
+                options,
+                IO.asExecutor(),
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onError(ex: ImageCaptureException) {
+                        it.cancel(ex)
+                    }
+
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        it.resume(outputFileResults.savedUri?.toString()) {}
+                    }
+                }
+            )
+        }
+
+    override fun onCapture(
+        options: ImageCapture.OutputFileOptions,
+        onSuccess: (String?) -> Unit,
+        onError: (Throwable?) -> Unit
+    ) {
+        view?.imageCaptureProvider?.takePicture(
+            options,
+            IO.asExecutor(),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(ex: ImageCaptureException) {
+                    onError(ex)
+                }
+
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    onSuccess(outputFileResults.savedUri.toString())
+                }
+            }
+        )
     }
 }

@@ -3,10 +3,10 @@ package com.jakebarnby.simpleml.text.extensions
 import com.google.firebase.ml.vision.text.FirebaseVisionText
 import com.google.mlkit.nl.languageid.IdentifiedLanguage
 import com.google.mlkit.vision.text.Text
-import com.jakebarnby.simpleml.models.DetectedText
-import com.jakebarnby.simpleml.models.TextBox
-import com.jakebarnby.simpleml.models.TextElement
-import com.jakebarnby.simpleml.models.TextLine
+import com.jakebarnby.simpleml.models.text.DetectedText
+import com.jakebarnby.simpleml.models.text.TextBox
+import com.jakebarnby.simpleml.models.text.TextElement
+import com.jakebarnby.simpleml.models.text.TextLine
 
 object DetectedTextExtensions {
 

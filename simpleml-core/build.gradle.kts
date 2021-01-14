@@ -41,6 +41,10 @@ android {
         noCompress("tflite")
         noCompress("lite")
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -49,8 +53,8 @@ android {
 dependencies {
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
 
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.0.0")
 
     implementation("androidx.appcompat:appcompat:1.2.0")

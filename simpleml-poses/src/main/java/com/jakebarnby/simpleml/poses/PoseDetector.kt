@@ -6,15 +6,15 @@ import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions
-import com.jakebarnby.simpleml.analyzer.AnalyzerTool
-import com.jakebarnby.simpleml.models.AnalysisLocation
-import com.jakebarnby.simpleml.models.DetectedPose
-import com.jakebarnby.simpleml.models.PoseOptions
+import com.jakebarnby.simpleml.analyzer.Detector
+import com.jakebarnby.simpleml.models.pose.DetectedPose
+import com.jakebarnby.simpleml.models.pose.PoseOptions
+import com.jakebarnby.simpleml.models.types.AnalysisLocation
 import com.jakebarnby.simpleml.poses.analyzer.LocalPoseAnalyzer
 import com.jakebarnby.simpleml.poses.extensions.DetectedPoseExtensions.toDetectedPose
 import kotlinx.coroutines.asExecutor
 
-class PoseDetector : AnalyzerTool() {
+class PoseDetector : Detector() {
 
     fun detectPoses(
         context: Activity,
@@ -33,9 +33,9 @@ class PoseDetector : AnalyzerTool() {
         options: PoseOptions = PoseOptions()
     ) {
         val realOptions = AccuratePoseDetectorOptions.Builder()
-            .setExecutor(options.detectionDispatcher.asExecutor())
+            .setExecutor(options.analysisDispatcher.coroutineDispatcher.asExecutor())
 
-        startCameraActivity<LocalPoseAnalyzer, PoseDetector, PoseDetectorOptionsBase, ImageProxy, List<PoseLandmark>>(
+        startDetectorActivity<LocalPoseAnalyzer, PoseDetector, PoseDetectorOptionsBase, ImageProxy, List<PoseLandmark>>(
             context,
             realOptions.build(),
             { results ->

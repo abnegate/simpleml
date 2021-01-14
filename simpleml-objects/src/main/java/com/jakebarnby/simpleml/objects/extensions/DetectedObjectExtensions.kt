@@ -5,7 +5,8 @@ import com.google.mlkit.vision.label.ImageLabel
 import com.google.mlkit.vision.objects.DetectedObject
 
 object DetectedObjectExtensions {
-    fun DetectedObject.toDetectedObject() = com.jakebarnby.simpleml.models.DetectedObject().apply {
+    fun DetectedObject.toDetectedObject() = com.jakebarnby.simpleml.models.`object`.DetectedObject()
+        .apply {
         id = trackingId
         boundingBox = this@toDetectedObject.boundingBox
         labels = this@toDetectedObject.labels.map {
@@ -13,7 +14,7 @@ object DetectedObjectExtensions {
         }
     }
 
-    fun ImageLabel.toDetectedObject() = com.jakebarnby.simpleml.models.DetectedObject().apply {
+    fun ImageLabel.toDetectedObject() = com.jakebarnby.simpleml.models.`object`.DetectedObject().apply {
         labels = listOf(
             Pair(
                 this@toDetectedObject.text,
@@ -23,7 +24,7 @@ object DetectedObjectExtensions {
     }
 
     fun FirebaseVisionImageLabel.toDetectedObject() =
-        com.jakebarnby.simpleml.models.DetectedObject().apply {
+        com.jakebarnby.simpleml.models.`object`.DetectedObject().apply {
             labels = listOf(
                 Pair(
                     this@toDetectedObject.text,

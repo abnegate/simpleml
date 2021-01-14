@@ -7,11 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.camera.camera2.Camera2Config
-import androidx.camera.core.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraX
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.jakebarnby.simpleml.Constants.ANALYZER_KEY
 import com.jakebarnby.simpleml.R
@@ -20,18 +22,18 @@ import com.jakebarnby.simpleml.camera2.Camera2Contract
 import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.helpers.CoroutineBase
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asExecutor
+import java.io.File
 
-open class Camera2Fragment<
+abstract class Camera2Fragment<
         TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
         TOptions,
         TInput,
-        TResult> :
+        TResult,
+        TOutResult> :
     Fragment(R.layout.fragment_camera2),
-    Camera2Contract.View<TDetector, TOptions, TInput, TResult>,
+    Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>,
     CoroutineBase {
 
     override val job = Job()
@@ -40,21 +42,20 @@ open class Camera2Fragment<
         const val CAMERA_PERMISSION_CODE = 0x01
     }
 
-    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
+    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? = null
     override var previewView: PreviewView? = null
     override var overlay: GraphicOverlay? = null
     override var cameraProvider: ProcessCameraProvider? = null
     override var imageCaptureProvider: ImageCapture? = null
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val analyzerWrapper = arguments?.getBinder(ANALYZER_KEY) as? BindWrapper<TAnalyzer>
-            ?: throw IllegalStateException("No analyzer wrapper found!")
+            ?: throw IllegalStateException("No analyzer wrapper found.")
 
         val analyzer = analyzerWrapper.data as? TAnalyzer
-            ?: throw IllegalStateException("No analyzer found!")
+            ?: throw IllegalStateException("No analyzer found.")
 
         presenter = Camera2Presenter(analyzer)
         previewView = view.findViewById(R.id.preview)
@@ -122,8 +123,19 @@ open class Camera2Fragment<
         }
     }
 
-    override fun capturePreview(options: ImageCapture.OutputFileOptions) {
-        presenter?.onCapture(options)
+    override suspend fun takePicture(outputPath: String) =
+        presenter?.onCapture(ImageCapture.OutputFileOptions.Builder(File(outputPath)).build())
+
+    override fun takePicture(
+        outputPath: String,
+        onSuccess: (String?) -> Unit,
+        onError: (Throwable?) -> Unit
+    ) {
+        presenter?.onCapture(
+            ImageCapture.OutputFileOptions.Builder(File(outputPath)).build(),
+            onSuccess,
+            onError
+        )
     }
 
     override fun bindCameraToLifecycle(vararg useCases: UseCase) {

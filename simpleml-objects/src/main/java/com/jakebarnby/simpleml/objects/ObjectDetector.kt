@@ -10,19 +10,19 @@ import com.google.mlkit.vision.label.ImageLabeler
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
-import com.jakebarnby.simpleml.analyzer.AnalyzerTool
-import com.jakebarnby.simpleml.models.AnalysisLocation
-import com.jakebarnby.simpleml.models.DetectedObject
-import com.jakebarnby.simpleml.models.ObjectOptions
+import com.jakebarnby.simpleml.analyzer.Detector
+import com.jakebarnby.simpleml.models.`object`.DetectedObject
+import com.jakebarnby.simpleml.models.`object`.ObjectOptions
+import com.jakebarnby.simpleml.models.types.AnalysisLocation
 import com.jakebarnby.simpleml.objects.analyzer.LocalLabelAnalyzer
 import com.jakebarnby.simpleml.objects.analyzer.LocalObjectAnalyzer
-import com.jakebarnby.simpleml.objects.analyzer.RemoteLabelAnalyzer
+import com.jakebarnby.simpleml.objects.analyzer.FirebaseVisionLabelAnalyzer
 import com.jakebarnby.simpleml.objects.extensions.DetectedObjectExtensions.toDetectedObject
 import com.jakebarnby.simpleml.objects.extensions.ObjectOptionsExtensions.toFirebaseVisionImageLabelerRecognizerOptions
 import com.jakebarnby.simpleml.objects.extensions.ObjectOptionsExtensions.toImageLabelerOptions
 import com.jakebarnby.simpleml.objects.extensions.ObjectOptionsExtensions.toObjectDetectorOptions
 
-class ObjectDetector : AnalyzerTool() {
+class ObjectDetector : Detector() {
 
     fun detectObjects(
         context: Activity,
@@ -40,7 +40,7 @@ class ObjectDetector : AnalyzerTool() {
         onNextResult: (List<DetectedObject>) -> Unit,
         options: ObjectOptions
     ) {
-        startCameraActivity<
+        startDetectorActivity<
                 LocalObjectAnalyzer,
                 ObjectDetector,
                 ObjectDetectorOptions,
@@ -68,7 +68,7 @@ class ObjectDetector : AnalyzerTool() {
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
         options: ObjectOptions
-    ) = startCameraActivity<
+    ) = startDetectorActivity<
             LocalLabelAnalyzer,
             ImageLabeler,
             ImageLabelerOptions,
@@ -85,8 +85,8 @@ class ObjectDetector : AnalyzerTool() {
         context: Activity,
         onNextResult: (List<DetectedObject>) -> Unit,
         options: ObjectOptions
-    ) = startCameraActivity<
-            RemoteLabelAnalyzer,
+    ) = startDetectorActivity<
+            FirebaseVisionLabelAnalyzer,
             FirebaseVisionImageLabeler,
             FirebaseVisionCloudImageLabelerOptions,
             ImageProxy,

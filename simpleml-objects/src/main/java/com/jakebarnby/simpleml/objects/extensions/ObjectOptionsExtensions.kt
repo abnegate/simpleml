@@ -3,7 +3,7 @@ package com.jakebarnby.simpleml.objects.extensions
 import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
-import com.jakebarnby.simpleml.models.ObjectOptions
+import com.jakebarnby.simpleml.models.`object`.ObjectOptions
 import kotlinx.coroutines.asExecutor
 
 object ObjectOptionsExtensions {
@@ -11,7 +11,7 @@ object ObjectOptionsExtensions {
     fun ObjectOptions.toImageLabelerOptions(): ImageLabelerOptions =
         ImageLabelerOptions.Builder()
             .setConfidenceThreshold(minimumConfidence)
-            .setExecutor(detectionDispatcher.asExecutor())
+            .setExecutor(analysisDispatcher.coroutineDispatcher.asExecutor())
             .build()
 
     fun ObjectOptions.toFirebaseVisionImageLabelerRecognizerOptions() =
@@ -21,7 +21,7 @@ object ObjectOptionsExtensions {
 
     fun ObjectOptions.toObjectDetectorOptions(): ObjectDetectorOptions {
         val builder = ObjectDetectorOptions.Builder()
-            .setExecutor(detectionDispatcher.asExecutor())
+            .setExecutor(analysisDispatcher.coroutineDispatcher.asExecutor())
 
         if (classificationEnabled) {
             builder.enableClassification()

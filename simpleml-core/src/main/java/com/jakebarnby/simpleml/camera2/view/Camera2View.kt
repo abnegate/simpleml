@@ -6,45 +6,46 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.AttributeSet
 import android.util.Log
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.Camera2Config
-import androidx.camera.core.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraX
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.jakebarnby.simpleml.R
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.Camera2Contract
+import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
 import com.jakebarnby.simpleml.helpers.CoroutineBase
-import kotlinx.coroutines.Dispatchers
+import com.jakebarnby.simpleml.models.OptionsBase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asExecutor
+import java.io.File
 
-class Camera2View<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
-        TDetector,
-        TOptions,
-        TInput,
-        TResult> :
-    ConstraintLayout,
+abstract class Camera2View<TDetector, TOptions, TInput, TResult, TOutResult> :
+    FrameLayout,
     LifecycleOwner,
-    Camera2Contract.View<TDetector, TOptions, TInput, TResult>,
+    LifecycleObserver,
+    Camera2Contract.View<TDetector, TOptions, TInput, TResult, TOutResult>,
     CoroutineBase {
 
-    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult>? = null
+    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? = null
     override var previewView: PreviewView? = null
     override var overlay: GraphicOverlay? = null
     override var cameraProvider: ProcessCameraProvider? = null
     override var imageCaptureProvider: ImageCapture? = null
 
-    override val job = Job()
+    var options: OptionsBase? = null
 
-    constructor(context: Context) : super(context)
+    override val job = Job()
 
     constructor(
         context: Context,
@@ -64,7 +65,7 @@ class Camera2View<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private fun init() {
+    open fun init(attrs: AttributeSet) {
         inflate(context, R.layout.view_camera2, this)
 
         previewView = findViewById(R.id.preview)
@@ -75,16 +76,14 @@ class Camera2View<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
             CameraX.initialize(context.applicationContext, Camera2Config.defaultConfig())
         }
 
-        startCamera()
+        (context as LifecycleOwner)
+            .lifecycle
+            .addObserver(this)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        presenter?.subscribe(this)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        cameraProvider?.unbindAll()
         presenter?.unsubscribe()
     }
 
@@ -106,6 +105,30 @@ class Camera2View<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         return true
     }
 
+    inline fun <reified TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>> setAnalyzer(
+        noinline onNextResult: (TResult) -> Unit,
+        options: TOptions
+    ) {
+        val analyzer = TAnalyzer::class.java.newInstance().apply {
+            onAnalysisResult = onNextResult
+            initialize(options)
+        }
+        presenter = Camera2Presenter(analyzer)
+        presenter?.subscribe(this)
+        startCamera()
+    }
+
+    protected inline fun <reified TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>> setAnalyzer(
+        options: TOptions
+    ) {
+        val analyzer = TAnalyzer::class.java.newInstance().apply {
+            initialize(options)
+        }
+        presenter = Camera2Presenter(analyzer)
+        presenter?.subscribe(this)
+        startCamera()
+    }
+
     override fun startCamera() {
         if (!checkCameraPermission()) {
             return
@@ -119,17 +142,32 @@ class Camera2View<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         }
     }
 
-    override fun capturePreview(options: ImageCapture.OutputFileOptions) {
-        presenter?.onCapture(options)
+    override suspend fun takePicture(outputPath: String) =
+        presenter?.onCapture(ImageCapture.OutputFileOptions.Builder(File(outputPath)).build())
+
+    override fun takePicture(
+        outputPath: String,
+        onSuccess: (String?) -> Unit,
+        onError: (Throwable?) -> Unit
+    ) {
+        presenter?.onCapture(
+            ImageCapture.OutputFileOptions.Builder(File(outputPath)).build(),
+            onSuccess,
+            onError
+        )
     }
 
     override fun bindCameraToLifecycle(vararg useCases: UseCase) {
+        val newCases = useCases.filter {
+            cameraProvider?.isBound(it) == false
+        }.toTypedArray()
+
         try {
             cameraProvider?.unbindAll()
             cameraProvider?.bindToLifecycle(
-                this,
+                { lifecycle },
                 CameraSelector.DEFAULT_BACK_CAMERA,
-                *useCases
+                *newCases
             )
         } catch (ex: Exception) {
             Log.e(javaClass.name, "Use case binding failed", ex)
