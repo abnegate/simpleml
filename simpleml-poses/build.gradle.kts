@@ -1,16 +1,13 @@
-import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
-import com.jfrog.bintray.gradle.BintrayExtension.VersionConfig
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
     id("com.android.library")
     kotlin("android")
-    id("com.jfrog.bintray") version "1.8.4"
 }
 
 ext {
-    set("archive", "simpleml-poses")
-    set("version", rootProject.extra["posesVersion"])
+    set("packageArchive", "simpleml-poses")
+    set("packageVersion", rootProject.properties["posesVersion"])
 }
 
 android {
@@ -52,7 +49,7 @@ dependencies {
     implementation("com.google.android.material:material:1.2.1")
 
     debugApi(project(":simpleml-core"))
-    releaseApi("com.jakebarnby.simpleml:simpleml-core:${rootProject.extra["coreVersion"]}")
+    releaseApi("com.jakebarnby.simpleml:simpleml-core:${rootProject.properties["coreVersion"]}")
 
     // Firebase Vision
     implementation(platform("com.google.firebase:firebase-bom:26.1.1"))
@@ -65,33 +62,6 @@ dependencies {
     testImplementation("junit:junit:4.13.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-}
-
-bintray {
-    val BINTRAY_USER: String by project
-    val BINTRAY_KEY: String by project
-    val module = project.extra["archive"] as? String
-
-    user = BINTRAY_USER
-    key = BINTRAY_KEY
-    setPublications("aar")
-
-    pkg(delegateClosureOf<PackageConfig> {
-        repo = "SimpleML"
-        name = module
-        userOrg = "jakebarnby"
-        vcsUrl = "https://github.com/abnegate/simpleml.git"
-        publish = true
-        publicDownloadNumbers = true
-        setLicenses("GPL-3.0")
-
-        version(delegateClosureOf<VersionConfig> {
-            val version = project.extra["version"] as String
-
-            name = version
-            vcsTag = "${module}/${version}"
-        })
-    })
 }
 
 apply(plugin = "com.google.gms.google-services")

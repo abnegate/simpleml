@@ -1,7 +1,7 @@
 # SimpleML
 ### Simplifies machine learning by combining multiple analysis methods into one easy to use interface.
 
-Using ML can be a pain in the ass to set up, with a lot of boiler plate and additional camera code required. With SimpleML you just need to choose what you want to detect, and detect it.
+Using ML can be a pain to set up, with a lot of boiler plate and additional camera code required. With SimpleML you just need to choose what you want to detect, and detect it.
 
 ## Support
 Currently supported kits:

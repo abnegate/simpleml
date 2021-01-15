@@ -7,28 +7,29 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.0-alpha04")
         classpath(kotlin("gradle-plugin", version = "1.4.21"))
         classpath("com.google.gms:google-services:4.3.4")
+        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
     }
 }
 
-extra["coreVersion"] = "1.0.0-beta02"
-extra["objectsVersion"] = "1.0.0-beta01"
-extra["posesVersion"] = "1.0.0-beta01"
-extra["textVersion"] = "1.0.0-beta01"
+ext {
+    set("packageGroup", "com.jakebarnby.simpleml")
+    set("coreVersion", "1.0.0-beta02")
+    set("objectsVersion", "1.0.0-beta01")
+    set("posesVersion", "1.0.0-beta01")
+    set("textVersion", "1.0.0-beta01")
+}
 
 allprojects {
     repositories {
         google()
         jcenter()
-
-        val SIMPLEML_REPO: String by project
-        maven(SIMPLEML_REPO)
+        maven(properties["simpleMLRepo"] as String)
     }
 }
 
-configure(subprojects.filter { it.name.startsWith("simpleml") }) {
+configure(subprojects.filter { it.name.startsWith("simpleml-") }) {
     afterEvaluate {
-        extra["group"] = "com.jakebarnby.simpleml"
-        apply(from = "../deploy.gradle.kts")
+        apply(from = "../deploy.gradle")
     }
 }
 
