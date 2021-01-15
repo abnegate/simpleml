@@ -40,7 +40,7 @@ To use a module, add one of the following to your modules `build.gradle`:
 There are 3 main ways to use SimpleML:
 
 1. View
-1. Add the view to your xml (all simpleml attributes are optional).
+- Add the view to your xml (all simpleml attributes are optional).
 ```xml
     <com.jakebarnby.simpleml.objects.view.LocalObjectAnalyzerView
         android:id="@+id/objectAnalyzerView"
@@ -57,7 +57,7 @@ There are 3 main ways to use SimpleML:
         app:simpleml_detectorMode="frame_stream"
         app:simpleml_minimumConfidence="0.7" />
 ```
-2. Attach a listener to the detector
+- Attach a listener to the detector
 ```kotlin
     val objectAnalyzerView = findViewById<LocalObjectAnalyzerView>(R.id.objectAnalyzerView)
 
@@ -119,12 +119,15 @@ SimpleML relies heavily on generics. Almost all functionality is extensible via 
 ```kotlin
 class CustomAnalyzer: Analyzer<TDetector, TOptions, TInput, TResult>
 ```
-Creating a custom analyzer
 
 ```kotlin
-class CustomView: Camera2View<TDetector, TOptions, TInput, TResult, TOutResult>
+class CustomView: Camera2View<
+    TDetector, 
+    TOptions, 
+    TInput, 
+    TResult, 
+    TOutResult>
 ```
-Creating a custom view.
 
 ```kotlin
 class CustomFragment: Camera2Fragment<CustomAnalyzer,
@@ -134,7 +137,6 @@ class CustomFragment: Camera2Fragment<CustomAnalyzer,
      TResult,
      TOutResult>
 ```
-Creating a custom fragment
 
 
 
