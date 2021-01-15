@@ -1,0 +1,138 @@
+apply(plugin: "maven-publish")
+apply(plugin: "com.jfrog.bintray")
+
+def artifactGroup = rootProject.properties["packageGroup"] as String
+def artifactModule = project.properties["packageArchive"] as String
+def artifactVersion = project.properties["packageVersion"] as String
+
+def pomUrl = "https://github.com/abnegate/simpleml"
+def pomScmUrl = "https://github.com/abnegate/simpleml.git"
+def pomIssueUrl = "https://github.com/abnegate/simpleml/issues"
+def pomDesc = "Simplifies machine learning by combining multiple analysis methods into one easy to use interface."
+
+def pomLicenseName = "GPL-3.0"
+def pomLicenseUrl = "https://opensource.org/licenses/GPL-3.0"
+
+def pomDeveloperId = "jakebarnby"
+def pomDeveloperName = "Jake Barnby"
+def pomDeveloperEmail = "jakeb994@gmail.com"
+
+def githubRepository = "abnegate/simpleml"
+def githubReadme = "README.md"
+def githubScmConnection = "scm:git:git://github.com/${githubRepository}.git"
+
+def bintrayRepo = "SimpleML"
+def bintrayUserOrganisation = "jakebarnby"
+
+tasks.register("sourcesJar", Jar) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
+
+tasks.register("javadoc", Javadoc) {
+    source = android.sourceSets.getByName("main").java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    setDestinationDir(file("../javadoc/"))
+    failOnError false
+}
+
+tasks.register("javadocJar", Jar) {
+    dependsOn(javadoc)
+    archiveClassifier.set("javadoc")
+    from(javadoc)
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = artifactGroup
+            artifactId = artifactModule
+            version = artifactVersion
+
+            artifacts {
+                artifact(sourcesJar)
+                artifact(javadocJar)
+                artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
+            }
+
+            pom {
+                name = artifactModule
+                description = pomDesc
+                url = pomUrl
+
+                licenses {
+                    license {
+                        name = pomLicenseName
+                        url = pomLicenseUrl
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = pomDeveloperId
+                        name = pomDeveloperName
+                        email = pomDeveloperEmail
+                    }
+                }
+
+                scm {
+                    connection = githubScmConnection
+                    url = pomScmUrl
+                }
+
+                withXml {
+                    def dependencies = asNode().appendNode("dependencies")
+
+                    configurations
+                        .getByName("releaseCompileClasspath")
+                        .resolvedConfiguration
+                        .firstLevelModuleDependencies.forEach {
+                                def dependency = dependencies.appendNode("dependency")
+                                dependency.appendNode("groupId", it.moduleGroup)
+                                dependency.appendNode("artifactId", it.moduleName)
+                                dependency.appendNode("version", it.moduleVersion)
+                            }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = project.properties["bintrayUser"].toString()
+    key = project.properties["bintrayKey"].toString()
+
+    dryRun = false
+    publish = true
+    override = true
+
+    setPublications("aar")
+
+    pkg {
+        repo = bintrayRepo
+        name = artifactModule
+        userOrg = bintrayUserOrganisation
+        desc = pomDesc
+        vcsUrl = pomScmUrl
+        issueTrackerUrl = pomIssueUrl
+        publicDownloadNumbers = true
+        githubRepo = githubRepository
+        githubReleaseNotesFile = githubReadme
+
+        licenses = [pomLicenseName]
+
+        version {
+            name = artifactVersion
+            released = new Date()
+            vcsTag = "${artifactModule}/${version}"
+
+            gpg {
+                sign = true
+            }
+        }
+    }
+}
+
+//println "group: ${artifactGroup}"
+//println "module: ${artifactModule}"
+//println "version: ${artifactVersion}"
