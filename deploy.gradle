@@ -142,3 +142,4 @@ println "-------------------------------"
 println bintray.pkg.repo
 println bintray.pkg.name
 println bintray.pkg.version.name
+println bintray.pkg.version.name
