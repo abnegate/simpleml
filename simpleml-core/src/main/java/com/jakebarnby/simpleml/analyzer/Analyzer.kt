@@ -31,6 +31,7 @@ abstract class Analyzer<TDetector, TOptions, TInput, TResult> :
                 return
             }
             runBlocking(IO) {
+                @Suppress("UNCHECKED_CAST")
                 this@Analyzer.analyzeInput(image as TInput)
                 image.close()
             }

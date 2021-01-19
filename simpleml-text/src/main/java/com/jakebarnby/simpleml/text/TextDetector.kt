@@ -61,7 +61,6 @@ class TextDetector : Detector() {
     }
 
     fun detectLanguages(
-        context: Activity,
         text: String,
         onNextResult: (DetectedText) -> Unit,
         options: TextOptions = TextOptions()

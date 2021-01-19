@@ -14,9 +14,9 @@ buildscript {
 ext {
     set("packageGroup", "com.jakebarnby.simpleml")
     set("coreVersion", "1.0.0-beta02")
-    set("objectsVersion", "1.0.0-beta01")
-    set("posesVersion", "1.0.0-beta01")
-    set("textVersion", "1.0.0-beta01")
+    set("objectsVersion", "1.0.0-beta02")
+    set("posesVersion", "1.0.0-beta02")
+    set("textVersion", "1.0.0-beta02")
 }
 
 allprojects {

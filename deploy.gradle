@@ -133,6 +133,12 @@ bintray {
     }
 }
 
-//println "group: ${artifactGroup}"
-//println "module: ${artifactModule}"
-//println "version: ${artifactVersion}"
+println "-- Package info: --------------"
+println "repo: ${bintrayRepo}"
+println "group: ${artifactGroup}"
+println "module: ${artifactModule}"
+println "version: ${artifactVersion}"
+println "-------------------------------"
+println bintray.pkg.repo
+println bintray.pkg.name
+println bintray.pkg.version.name

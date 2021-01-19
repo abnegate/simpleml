@@ -7,6 +7,7 @@ import androidx.camera.core.Preview
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.Camera2Contract
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -49,6 +50,7 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
         view?.bindCameraToLifecycle(preview, imageAnalysis, imageCapture)
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun onCapture(options: ImageCapture.OutputFileOptions) =
         suspendCancellableCoroutine<String?> {
             view?.imageCaptureProvider?.takePicture(

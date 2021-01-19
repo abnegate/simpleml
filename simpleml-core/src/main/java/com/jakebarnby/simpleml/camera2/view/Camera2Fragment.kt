@@ -52,6 +52,7 @@ abstract class Camera2Fragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        @Suppress("UNCHECKED_CAST")
         val analyzerWrapper = arguments?.getBinder(ANALYZER_KEY) as? BindWrapper<TAnalyzer>
             ?: throw IllegalStateException("No analyzer wrapper found.")
 

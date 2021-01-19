@@ -59,6 +59,7 @@ class Camera2Activity<
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera2)
 
+        @Suppress("UNCHECKED_CAST")
         val analyzerWrapper = intent.extras?.getBinder(ANALYZER_KEY) as? BindWrapper<TAnalyzer>
             ?: throw IllegalStateException("No analyzer wrapper found!")
 
@@ -132,6 +133,7 @@ class Camera2Activity<
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         display?.rotation ?: 0
                     } else {
+                        @Suppress("DEPRECATION")
                         windowManager.defaultDisplay.rotation
                     }
                 )
