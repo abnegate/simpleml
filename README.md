@@ -3,6 +3,12 @@
 
 Using ML can be a pain to set up, with a lot of boiler plate and additional camera code required. With SimpleML you just need to choose what you want to detect, and detect it.
 
+<br /><br />
+<strong>Like SimpleML?</strong>
+<br />
+<a href="https://www.buymeacoffee.com/abnegate" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
+
 ## Support
 Currently supported kits:
 - Google ML Kit
