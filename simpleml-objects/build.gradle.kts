@@ -12,11 +12,9 @@ ext {
 
 android {
     compileSdk = 32
-
     defaultConfig {
         minSdk = 21
         targetSdk = 32
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -36,12 +34,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-            withJavadocJar()
-        }
     }
 }
 
@@ -63,11 +55,9 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite:2.7.0")
     implementation("org.tensorflow:tensorflow-lite-task-vision:0.3.0")
     implementation("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.3.0")
-    implementation("org.tensorflow:tensorflow-lite-support:0.3.0")
+    implementation("org.tensorflow:tensorflow-lite-support-api:0.3.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 }
-
-apply(plugin = "com.google.gms.google-services")

@@ -15,7 +15,7 @@
         app:simpleml_analysisLocation="device"
         app:simpleml_classificationEnabled="true"
         app:simpleml_detectMultiple="true"
-        app:simpleml_detectionDispatcher="IO"
+        app:simpleml_detectionDispatcher="io"
         app:simpleml_detectorMode="frame_stream"
         app:simpleml_minimumConfidence="0.7" />
 

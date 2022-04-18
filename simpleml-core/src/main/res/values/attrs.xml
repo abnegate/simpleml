@@ -17,7 +17,6 @@
         <attr name="simpleml_detectionDispatcher" format="enum">
             <enum name="io" value="0" />
             <enum name="main" value="1" />
-            <enum name="default" value="2" />
             <enum name="unconfined" value="3" />
         </attr>
         <attr name="simpleml_classificationEnabled" format="boolean" />

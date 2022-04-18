@@ -43,7 +43,7 @@ class FileDownloader : CoroutineBase {
                 }
 
                 val sink = downloadedFile.sink().buffer()
-                val sinkBuffer = sink.buffer()
+                val sinkBuffer = sink.buffer
 
                 var totalBytesRead: Long = 0
                 val bufferSize: Long = 8 * 1024

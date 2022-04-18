@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# $@: Modules to deploy, in order of deployment.
+set -e
+modules="$*"
+for module in ${modules}; do
+    echo "Deploying simpleml-${module}..."
+    ./gradlew simpleml-"${module}":build
+    ./gradlew simpleml-"${module}":assembleRelease
+    ./gradlew simpleml-"${module}":publish
+done
+echo "Done!"

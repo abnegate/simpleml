@@ -35,6 +35,15 @@ tasks.register("javadocJar", Jar) {
 }
 
 publishing {
+    repositories {
+        maven {
+            url "https://maven.jakebarnby.com"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
     publications {
         aar(MavenPublication) {
             groupId = artifactGroup

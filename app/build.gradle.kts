@@ -53,7 +53,10 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
-    implementation(project(":simpleml-objects"))
-    implementation(project(":simpleml-poses"))
-    implementation(project(":simpleml-text"))
+    debugImplementation(project(":simpleml-objects"))
+    debugImplementation(project(":simpleml-poses"))
+    debugImplementation(project(":simpleml-text"))
+//    implementation("com.jakebarnby.simpleml:simpleml-objects:${rootProject.properties["objectsVersion"]}")
+//    implementation("com.jakebarnby.simpleml:simpleml-poses:${rootProject.properties["posesVersion"]}")
+//    implementation("com.jakebarnby.simpleml:simpleml-text:${rootProject.properties["textVersion"]}")
 }
