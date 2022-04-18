@@ -19,13 +19,10 @@ abstract class ObjectAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, 
             onNextResult: (List<DetectedObject>) -> Unit,
             options: ObjectOptions = ObjectOptions()
         ) = when (options.analysisLocation) {
-            AnalysisLocation.DEVICE ->
-                LocalObjectAnalyzerFragment.newInstance(
-                    onNextResult,
-                    options
-                )
-            AnalysisLocation.FIREBASE_VISION ->
-                throw UnsupportedOperationException("No Firebase Vision object detector.")
+            AnalysisLocation.DEVICE -> LocalObjectAnalyzerFragment.newInstance(
+                onNextResult,
+                options
+            )
         }
     }
 }

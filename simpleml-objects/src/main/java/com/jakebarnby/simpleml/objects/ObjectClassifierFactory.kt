@@ -5,7 +5,6 @@ import com.jakebarnby.simpleml.Classification
 import com.jakebarnby.simpleml.classification.Classifier
 import com.jakebarnby.simpleml.classification.ClassifierType
 import com.jakebarnby.simpleml.helpers.FileDownloader
-import com.jakebarnby.simpleml.objects.classifier.FirebaseCloudClassifier
 import com.jakebarnby.simpleml.objects.classifier.TensorflowClassifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +24,6 @@ class ObjectClassifierFactory : CoroutineScope {
             activity: Activity,
             configuration: Classification.Configuration
         ): Classifier = when (configuration.classifier) {
-            ClassifierType.FIREBASE_CLOUD -> FirebaseCloudClassifier(
-                activity,
-                null,
-                configuration
-            )
             ClassifierType.TENSORFLOW -> TensorflowClassifier(
                 activity,
                 configuration,

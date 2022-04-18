@@ -19,13 +19,16 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.os.SystemClock
 import android.util.Log
-import com.jakebarnby.simpleml.*
+import com.jakebarnby.simpleml.Classification
 import com.jakebarnby.simpleml.classification.ClassifiedResult
 import com.jakebarnby.simpleml.classification.Classifier
 import com.jakebarnby.simpleml.helpers.CoroutineBase
 import com.jakebarnby.simpleml.helpers.FileDownloader
-import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.Interpreter
 import java.io.*
 import java.nio.ByteBuffer
@@ -45,7 +48,7 @@ class TensorflowClassifier @Throws(IOException::class) internal constructor(
 
     override val job = Job()
 
-    // Preallocated buffers for storing image data in
+    // Pre-allocated buffers for storing image data in
     private val intValues = IntArray(DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y)
 
     private lateinit var tflite: Interpreter

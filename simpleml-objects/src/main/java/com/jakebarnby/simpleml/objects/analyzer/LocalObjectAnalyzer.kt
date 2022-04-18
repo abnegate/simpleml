@@ -30,9 +30,9 @@ class LocalObjectAnalyzer :
 
         val results = detector
             ?.process(mlImage)
-            ?.await() ?: return
+            ?.await()
 
-        if (results.isNotEmpty()) {
+        if (results?.isNotEmpty() == true) {
             onAnalysisResult?.invoke(results)
         }
     }

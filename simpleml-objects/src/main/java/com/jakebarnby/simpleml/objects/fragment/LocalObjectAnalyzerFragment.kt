@@ -28,7 +28,9 @@ class LocalObjectAnalyzerFragment : ObjectAnalyzerFragment<
         ) = LocalObjectAnalyzerFragment().apply {
             arguments = bundleOf(Constants.ANALYZER_KEY to BindWrapper(LocalObjectAnalyzer().apply {
                 onAnalysisResult = { results ->
-                    onNextResult(results.map { it.toDetectedObject() })
+                    onNextResult(results.map {
+                        it.toDetectedObject()
+                    })
                 }
                 initialize(options.toObjectDetectorOptions())
             }))
@@ -37,7 +39,9 @@ class LocalObjectAnalyzerFragment : ObjectAnalyzerFragment<
 
     override fun setOnNextDetectionListener(onNext: (List<DetectedObject>) -> Unit) {
         presenter?.analyzer?.onAnalysisResult = { results ->
-            onNext(results.map { it.toDetectedObject() })
+            onNext(results.map {
+                it.toDetectedObject()
+            })
         }
     }
 }

@@ -46,14 +46,15 @@ class LocalObjectAnalyzerView : ObjectAnalyzerView<ObjectDetector,
         super.init(attrs)
 
         setAnalyzer<LocalObjectAnalyzer>(
-            (options as ObjectOptions)
-                .toObjectDetectorOptions()
+            (options as ObjectOptions).toObjectDetectorOptions()
         )
     }
 
     override fun setOnNextDetectionListener(onNext: (List<com.jakebarnby.simpleml.models.`object`.DetectedObject>) -> Unit) {
         presenter?.analyzer?.onAnalysisResult = { results ->
-            onNext(results.map { it.toDetectedObject() })
+            onNext(results.map {
+                it.toDetectedObject()
+            })
         }
     }
 }
