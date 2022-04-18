@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 32
     defaultConfig {
         applicationId = "com.jakebarnby.samplesimpleml"
-        minSdkVersion(21)
-        targetSdkVersion(30)
+        minSdk = 21
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 
@@ -30,11 +30,9 @@ android {
         dataBinding = true
     }
     packagingOptions {
-        exclude("META-INF/proguard/androidx-annotations.pro")
-    }
-    aaptOptions {
-        noCompress("tflite")
-        noCompress("lite")
+        resources {
+            excludes += setOf("META-INF/proguard/androidx-annotations.pro")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -48,12 +46,12 @@ android {
 dependencies {
 
     implementation(kotlin("stdlib", org.jetbrains.kotlin.config.KotlinCompilerVersion.VERSION))
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 
-    testImplementation("junit:junit:4.13.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
     implementation(project(":simpleml-objects"))
     implementation(project(":simpleml-poses"))

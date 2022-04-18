@@ -1,28 +1,20 @@
 apply(plugin: "maven-publish")
-apply(plugin: "com.jfrog.bintray")
 
 def artifactGroup = rootProject.properties["packageGroup"] as String
 def artifactModule = project.properties["packageArchive"] as String
 def artifactVersion = project.properties["packageVersion"] as String
-
 def pomUrl = "https://github.com/abnegate/simpleml"
 def pomScmUrl = "https://github.com/abnegate/simpleml.git"
 def pomIssueUrl = "https://github.com/abnegate/simpleml/issues"
 def pomDesc = "Simplifies machine learning by combining multiple analysis methods into one easy to use interface."
-
 def pomLicenseName = "GPL-3.0"
 def pomLicenseUrl = "https://opensource.org/licenses/GPL-3.0"
-
 def pomDeveloperId = "jakebarnby"
 def pomDeveloperName = "Jake Barnby"
 def pomDeveloperEmail = "jakeb994@gmail.com"
-
 def githubRepository = "abnegate/simpleml"
 def githubReadme = "README.md"
 def githubScmConnection = "scm:git:git://github.com/${githubRepository}.git"
-
-def bintrayRepo = "SimpleML"
-def bintrayUserOrganisation = "jakebarnby"
 
 tasks.register("sourcesJar", Jar) {
     archiveClassifier.set("sources")
@@ -84,62 +76,16 @@ publishing {
                     def dependencies = asNode().appendNode("dependencies")
 
                     configurations
-                        .getByName("releaseCompileClasspath")
-                        .resolvedConfiguration
-                        .firstLevelModuleDependencies.forEach {
-                                def dependency = dependencies.appendNode("dependency")
-                                dependency.appendNode("groupId", it.moduleGroup)
-                                dependency.appendNode("artifactId", it.moduleName)
-                                dependency.appendNode("version", it.moduleVersion)
-                            }
+                            .getByName("releaseCompileClasspath")
+                            .resolvedConfiguration
+                            .firstLevelModuleDependencies.forEach {
+                        def dependency = dependencies.appendNode("dependency")
+                        dependency.appendNode("groupId", it.moduleGroup)
+                        dependency.appendNode("artifactId", it.moduleName)
+                        dependency.appendNode("version", it.moduleVersion)
+                    }
                 }
             }
         }
     }
 }
-
-bintray {
-    user = project.properties["bintrayUser"].toString()
-    key = project.properties["bintrayKey"].toString()
-
-    dryRun = false
-    publish = true
-    override = true
-
-    setPublications("aar")
-
-    pkg {
-        repo = bintrayRepo
-        name = artifactModule
-        userOrg = bintrayUserOrganisation
-        desc = pomDesc
-        vcsUrl = pomScmUrl
-        issueTrackerUrl = pomIssueUrl
-        publicDownloadNumbers = true
-        githubRepo = githubRepository
-        githubReleaseNotesFile = githubReadme
-
-        licenses = [pomLicenseName]
-
-        version {
-            name = artifactVersion
-            released = new Date()
-            vcsTag = "${artifactModule}/${version}"
-
-            gpg {
-                sign = true
-            }
-        }
-    }
-}
-
-println "-- Package info: --------------"
-println "repo: ${bintrayRepo}"
-println "group: ${artifactGroup}"
-println "module: ${artifactModule}"
-println "version: ${artifactVersion}"
-println "-------------------------------"
-println bintray.pkg.repo
-println bintray.pkg.name
-println bintray.pkg.version.name
-println bintray.pkg.version.name
