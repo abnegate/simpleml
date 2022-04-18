@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">SimpleML Sample</string>
+    <string name="go_to_object_detection">Go to object detection</string>
+    <string name="go_to_text_detection">Go to text detection</string>
+    <string name="go_to_pose_detection">Go to pose detection</string>
+    <string name="go_to_fragment_sample">Go to fragment sample</string>
+    <string name="go_to_view_sample">Go to view sample</string>
+    <string name="go_to_tensorflow_sample">Go to TensorFlow sample</string>
 </resources>

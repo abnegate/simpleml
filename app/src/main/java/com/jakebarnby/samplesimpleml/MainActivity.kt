@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnView).setOnClickListener {
             goToView()
         }
+        findViewById<Button>(R.id.btnTensorflow).setOnClickListener {
+            startClassifier()
+        }
     }
 
     fun startClassifier() {
@@ -48,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startObjectDetector() {
-        ObjectDetector().detectObjects(this, { results ->
+        ObjectDetector().stream(this, { results ->
             for (result in results) {
                 Log.i(javaClass.name, result.toString())
             }
@@ -56,28 +59,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startPoseDetector() {
-        PoseDetector().detectPoses(this, { results ->
+        PoseDetector().stream(this, { results ->
             for (result in results) {
-                Log.i(javaClass.name, result.toString())
+                Log.i(javaClass.name, results.joinToString {
+                    "${it.landmark}: ${it.position}, in frame: ${it.inFrameLikelihood}\n"
+                })
             }
         })
     }
 
     private fun startTextDetector() {
-        TextDetector().detectTexts(this, { result ->
+        TextDetector().stream(this, { result ->
             Log.i(javaClass.name, result.toString())
         })
     }
 
     private fun goToFragment() {
-        startActivity(
-            Intent(this, FragmentActivity::class.java)
-        )
+        startActivity(Intent(this, FragmentActivity::class.java))
     }
 
     private fun goToView() {
-        startActivity(
-            Intent(this, ViewActivity::class.java)
-        )
+        startActivity(Intent(this, ViewActivity::class.java))
     }
 }

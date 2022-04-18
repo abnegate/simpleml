@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.jakebarnby.simpleml.helpers.CoroutineBase
 import com.jakebarnby.simpleml.objects.view.LocalObjectAnalyzerView
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class ViewActivity : AppCompatActivity(), CoroutineBase {
 
@@ -23,11 +22,6 @@ class ViewActivity : AppCompatActivity(), CoroutineBase {
             Log.e(javaClass.name, results.joinToString {
                 it.labels.joinToString { ", " }
             })
-        }
-
-        launch {
-            val uri = cameraView.takePicture("output_path.jpg")
-            Log.e(javaClass.name, "Output uri is $uri")
         }
     }
 }

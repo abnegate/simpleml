@@ -3,7 +3,6 @@
     package="com.jakebarnby.samplesimpleml">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -17,10 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.jakebarnby.samplesimpleml.MainActivity">
+        <activity
+            android:name="com.jakebarnby.samplesimpleml.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,6 +32,7 @@
         <activity
             android:name="com.jakebarnby.samplesimpleml.ViewActivity"
             android:theme="@style/MaterialTheme" />
+
     </application>
 
 </manifest>

@@ -10,7 +10,7 @@
         android:id="@+id/btnObject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to object detection"
+        android:text="@string/go_to_object_detection"
         app:layout_constraintBottom_toTopOf="@id/btnText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/btnText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to text detection"
+        android:text="@string/go_to_text_detection"
         app:layout_constraintBottom_toTopOf="@id/btnPose"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +31,7 @@
         android:id="@+id/btnPose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to pose detection"
+        android:text="@string/go_to_pose_detection"
         app:layout_constraintBottom_toTopOf="@id/btnFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
         android:id="@+id/btnFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to fragment sample"
+        android:text="@string/go_to_fragment_sample"
         app:layout_constraintBottom_toTopOf="@id/btnView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,10 +51,20 @@
         android:id="@+id/btnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to view sample"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/go_to_view_sample"
+        app:layout_constraintBottom_toTopOf="@id/btnTensorflow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnFragment" />
+
+    <Button
+        android:id="@+id/btnTensorflow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_tensorflow_sample"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
