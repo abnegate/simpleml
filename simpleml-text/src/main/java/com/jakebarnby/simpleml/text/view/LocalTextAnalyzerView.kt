@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognizer
-import com.google.mlkit.vision.text.TextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jakebarnby.simpleml.camera2.view.Camera2View
 import com.jakebarnby.simpleml.models.text.DetectedText
 import com.jakebarnby.simpleml.models.text.TextOptions

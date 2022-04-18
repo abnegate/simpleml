@@ -22,8 +22,6 @@ abstract class LanguageAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions
         ) = when (options.analysisLocation) {
             AnalysisLocation.DEVICE ->
                 LocalLanguageAnalyzerFragment.newInstance(text, onNextResult, options)
-            AnalysisLocation.FIREBASE_VISION ->
-                throw UnsupportedOperationException("No Firebase Vision detector for language.")
         }
     }
 }

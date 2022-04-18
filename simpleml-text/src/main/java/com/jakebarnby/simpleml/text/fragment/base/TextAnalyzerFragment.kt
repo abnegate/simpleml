@@ -5,7 +5,6 @@ import com.jakebarnby.simpleml.camera2.view.Camera2Fragment
 import com.jakebarnby.simpleml.models.text.DetectedText
 import com.jakebarnby.simpleml.models.text.TextOptions
 import com.jakebarnby.simpleml.models.types.AnalysisLocation
-import com.jakebarnby.simpleml.text.fragment.FirebaseVisionTextAnalyzerFragment
 import com.jakebarnby.simpleml.text.fragment.LocalTextAnalyzerFragment
 
 abstract class TextAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
@@ -22,11 +21,6 @@ abstract class TextAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TI
         ) = when (options.analysisLocation) {
             AnalysisLocation.DEVICE ->
                 LocalTextAnalyzerFragment.newInstance(
-                    onNextResult,
-                    options
-                )
-            AnalysisLocation.FIREBASE_VISION ->
-                FirebaseVisionTextAnalyzerFragment.newInstance(
                     onNextResult,
                     options
                 )

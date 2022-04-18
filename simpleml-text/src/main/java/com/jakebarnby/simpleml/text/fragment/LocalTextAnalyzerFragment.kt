@@ -4,7 +4,7 @@ import androidx.camera.core.ImageProxy
 import androidx.core.os.bundleOf
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognizer
-import com.google.mlkit.vision.text.TextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jakebarnby.simpleml.Constants
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.models.text.DetectedText
