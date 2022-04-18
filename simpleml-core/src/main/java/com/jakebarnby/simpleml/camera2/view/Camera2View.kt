@@ -1,16 +1,13 @@
 package com.jakebarnby.simpleml.camera2.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraX
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -27,9 +24,11 @@ import com.jakebarnby.simpleml.camera2.Camera2Contract
 import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
 import com.jakebarnby.simpleml.helpers.CoroutineBase
 import com.jakebarnby.simpleml.models.OptionsBase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import java.io.File
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class Camera2View<TDetector, TOptions, TInput, TResult, TOutResult> :
     FrameLayout,
     LifecycleOwner,
@@ -71,11 +70,6 @@ abstract class Camera2View<TDetector, TOptions, TInput, TResult, TOutResult> :
 
         previewView = findViewById(R.id.preview)
         overlay = findViewById(R.id.overlay)
-
-        @SuppressLint("RestrictedApi")
-        if (!CameraX.isInitialized()) {
-            CameraX.initialize(context.applicationContext, Camera2Config.defaultConfig())
-        }
 
         (context as LifecycleOwner)
             .lifecycle

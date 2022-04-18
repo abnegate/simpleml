@@ -1,14 +1,11 @@
 package com.jakebarnby.simpleml.camera2.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraX
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -22,9 +19,11 @@ import com.jakebarnby.simpleml.camera2.Camera2Contract
 import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.helpers.CoroutineBase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import java.io.File
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class Camera2Fragment<
         TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
@@ -62,11 +61,6 @@ abstract class Camera2Fragment<
         presenter = Camera2Presenter(analyzer)
         previewView = view.findViewById(R.id.preview)
         overlay = view.findViewById(R.id.overlay)
-
-        @SuppressLint("RestrictedApi")
-        if (!CameraX.isInitialized()) {
-            CameraX.initialize(requireContext().applicationContext, Camera2Config.defaultConfig())
-        }
 
         startCamera()
     }

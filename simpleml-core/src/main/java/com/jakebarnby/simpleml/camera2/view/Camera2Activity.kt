@@ -1,7 +1,6 @@
 package com.jakebarnby.simpleml.camera2.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
@@ -9,9 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.camera2.Camera2Config
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraX
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -25,9 +22,11 @@ import com.jakebarnby.simpleml.camera2.Camera2Contract
 import com.jakebarnby.simpleml.camera2.presenter.Camera2Presenter
 import com.jakebarnby.simpleml.helpers.BindWrapper
 import com.jakebarnby.simpleml.helpers.CoroutineBase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import java.io.File
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class Camera2Activity<
         TAnalyzer : Analyzer<TDetector, TOptions, TInput, TResult>,
         TDetector,
@@ -45,8 +44,14 @@ class Camera2Activity<
         const val CAMERA_PERMISSION_CODE = 0x01
     }
 
-    override var presenter: Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult>? =
-        null
+    override var presenter: Camera2Contract.Presenter<
+            TDetector,
+            TOptions,
+            TInput,
+            TResult,
+            TOutResult
+            >? = null
+
     override var previewView: PreviewView? = null
     override var overlay: GraphicOverlay? = null
     override var cameraProvider: ProcessCameraProvider? = null
@@ -54,7 +59,6 @@ class Camera2Activity<
 
     private var backBtn: ImageButton? = null
 
-    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera2)
@@ -73,10 +77,6 @@ class Camera2Activity<
 
         backBtn?.setOnClickListener { onBackPressed() }
 
-        if (!CameraX.isInitialized()) {
-            CameraX.initialize(applicationContext, Camera2Config.defaultConfig())
-        }
-
         startCamera()
     }
 
@@ -85,6 +85,8 @@ class Camera2Activity<
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera()
@@ -125,8 +127,10 @@ class Camera2Activity<
         if (!checkCameraPermission()) {
             return
         }
+
         previewView?.post {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
             cameraProviderFuture.addListener({
                 cameraProvider = cameraProviderFuture.get()
                 presenter?.onBindPreview(

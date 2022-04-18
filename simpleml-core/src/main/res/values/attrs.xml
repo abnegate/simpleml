@@ -13,12 +13,12 @@
         </attr>
         <attr name="simpleml_analysisLocation" format="enum">
             <enum name="device" value="0" />
-            <enum name="firebase_vision" value="1" />
         </attr>
         <attr name="simpleml_detectionDispatcher" format="enum">
-            <enum name="main" value="0" />
-            <enum name="IO" value="1" />
-            <enum name="unconfined" value="2" />
+            <enum name="io" value="0" />
+            <enum name="main" value="1" />
+            <enum name="default" value="2" />
+            <enum name="unconfined" value="3" />
         </attr>
         <attr name="simpleml_classificationEnabled" format="boolean" />
         <attr name="simpleml_detectMultiple" format="boolean" />

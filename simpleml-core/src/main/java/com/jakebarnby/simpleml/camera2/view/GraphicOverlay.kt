@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.util.AttributeSet
 import android.view.View
 import com.jakebarnby.simpleml.camera2.view.GraphicOverlay.Graphic
-import java.util.*
 
 
 /**

@@ -6,11 +6,12 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import com.jakebarnby.simpleml.analyzer.Analyzer
 import com.jakebarnby.simpleml.camera2.Camera2Contract
-import kotlinx.coroutines.Dispatchers.IO
+import com.jakebarnby.simpleml.models.types.AnalysisDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.suspendCancellableCoroutine
 
+@ExperimentalCoroutinesApi
 class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
     override var analyzer: Analyzer<TDetector, TOptions, TInput, TResult>,
 ) : Camera2Contract.Presenter<TDetector, TOptions, TInput, TResult, TOutResult> {
@@ -38,7 +39,7 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
             .build()
 
         imageAnalysis.setAnalyzer(
-            IO.asExecutor(),
+            AnalysisDispatcher.IO.dispatch.asExecutor(),
             analyzer
         )
 
@@ -50,12 +51,11 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
         view?.bindCameraToLifecycle(preview, imageAnalysis, imageCapture)
     }
 
-    @ExperimentalCoroutinesApi
     override suspend fun onCapture(options: ImageCapture.OutputFileOptions) =
         suspendCancellableCoroutine<String?> {
             view?.imageCaptureProvider?.takePicture(
                 options,
-                IO.asExecutor(),
+                AnalysisDispatcher.IO.dispatch.asExecutor(),
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onError(ex: ImageCaptureException) {
                         it.cancel(ex)
@@ -75,7 +75,7 @@ class Camera2Presenter<TDetector, TOptions, TInput, TResult, TOutResult>(
     ) {
         view?.imageCaptureProvider?.takePicture(
             options,
-            IO.asExecutor(),
+            AnalysisDispatcher.IO.dispatch.asExecutor(),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(ex: ImageCaptureException) {
                     onError(ex)

@@ -3,7 +3,6 @@ package com.jakebarnby.simpleml
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.jakebarnby.simpleml.analyzer.AnalyzerType
 import com.jakebarnby.simpleml.camera2.view.Camera2Activity
 import com.jakebarnby.simpleml.classification.ClassifierType
@@ -13,7 +12,7 @@ class Classification {
 
     companion object {
         private const val TAG = "ImageClassifier"
-        const val CONFIG_KEY = "classifier_data"
+        private const val CONFIG_KEY = "classifier_data"
 
         fun start(
             activity: Activity,
@@ -24,24 +23,12 @@ class Classification {
         }
 
         private fun checkConfiguration(configuration: Configuration) {
-            if (configuration.classifier == null) {
-                throw IllegalStateException("ImageClassifier requires a [ClassifierType] to be set.")
-            }
+            requireNotNull(configuration.classifier) { "Configuration must contain a classifier" }
+
             if (configuration.classifier == ClassifierType.TENSORFLOW
-                && configuration.modelUrl == null
+                && (configuration.modelUrl == null || configuration.labelUrl == null)
             ) {
-                throw IllegalStateException("Tensorflow classifier requires a model url (either local [assets/] or remote.")
-            }
-            if (configuration.classifier == ClassifierType.TENSORFLOW
-                && configuration.labelUrl == null
-            ) {
-                throw IllegalStateException("Tensorflow classifier requires a label url (either local [assets/] or remote.")
-            }
-            if (configuration.minimumConfidence == 0f) {
-                Log.w(
-                    TAG,
-                    "ImageClassifier created with 0 minimum confidence, erroneous results may be shown."
-                )
+                throw IllegalStateException("Tensorflow classifier requires model and labels urls (either local [assets/] or remote.")
             }
         }
 

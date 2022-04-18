@@ -7,7 +7,7 @@ import kotlin.coroutines.CoroutineContext
 
 interface CoroutineBase : CoroutineScope {
     override val coroutineContext: CoroutineContext
-        get() = Main
+        get() = Main + job
 
     val job: Job
 }

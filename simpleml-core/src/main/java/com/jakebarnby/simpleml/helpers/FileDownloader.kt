@@ -3,7 +3,8 @@ package com.jakebarnby.simpleml.helpers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import okhttp3.*
-import okio.Okio
+import okio.buffer
+import okio.sink
 import java.io.File
 import java.io.IOException
 
@@ -32,7 +33,7 @@ class FileDownloader : CoroutineBase {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val body = response.body() ?: throw IllegalStateException("No response body")
+                val body = response.body ?: throw IllegalStateException("No response body")
                 val contentLength = body.contentLength()
                 val source = body.source()
 
@@ -41,7 +42,7 @@ class FileDownloader : CoroutineBase {
                     return
                 }
 
-                val sink = Okio.buffer(Okio.sink(downloadedFile))
+                val sink = downloadedFile.sink().buffer()
                 val sinkBuffer = sink.buffer()
 
                 var totalBytesRead: Long = 0
