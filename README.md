@@ -1,17 +1,23 @@
 # SimpleML
 
-## Simplifies machine learning integration by wrapping multiple analysis methods into one easy to use interface
+### Simplifies machine learning integration by wrapping multiple analysis methods into one easy to use interface
 
 Machine Learning integrations can be difficult and time consuming to set up, with a lot of boiler plate code and domain-specific knowledge required. With SimpleML you just need to choose what you want to detect, and detect it.
 
 ## Installation
 
 Add to your `build.gradle`:
-
 ```groovy
-    implementation 'com.jakebarnby:simpleml:simpleml-objects:1.1.0-beta01'
-    implementation 'com.jakebarnby:simpleml:simpleml-text:1.1.0-beta01'
-    implementation 'com.jakebarnby:simpleml:simpleml-poses:1.1.0-beta01'
+    repositories {
+        maven("https://maven.jakebarnby.com")
+    }
+```
+```groovy
+    dependencies {
+        implementation 'com.jakebarnby:simpleml:simpleml-objects:1.1.0-beta01'
+        implementation 'com.jakebarnby:simpleml:simpleml-text:1.1.0-beta01'
+        implementation 'com.jakebarnby:simpleml:simpleml-poses:1.1.0-beta01'
+    }
 ```
 
 ## Getting started
