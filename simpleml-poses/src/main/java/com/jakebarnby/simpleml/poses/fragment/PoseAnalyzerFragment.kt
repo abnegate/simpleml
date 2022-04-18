@@ -20,8 +20,6 @@ abstract class PoseAnalyzerFragment<TAnalyzer : Analyzer<TDetector, TOptions, TI
         ) = when (options.analysisLocation) {
             AnalysisLocation.DEVICE ->
                 LocalPoseAnalyzerFragment.newInstance(onNextResult, options)
-            AnalysisLocation.FIREBASE_VISION ->
-                throw UnsupportedOperationException("No Firebase Vision pose detector available.")
         }
     }
 }

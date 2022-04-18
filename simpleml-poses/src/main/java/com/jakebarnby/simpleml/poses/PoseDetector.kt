@@ -16,15 +16,13 @@ import kotlinx.coroutines.asExecutor
 
 class PoseDetector : Detector() {
 
-    fun detectPoses(
+    fun stream(
         context: Activity,
         onNextResult: (List<DetectedPose>) -> Unit,
         options: PoseOptions = PoseOptions()
     ) = when (options.analysisLocation) {
         AnalysisLocation.DEVICE ->
             detectPosesOnDevice(context, onNextResult, options)
-        AnalysisLocation.FIREBASE_VISION ->
-            throw UnsupportedOperationException("No Firebase Vision pose detector available.")
     }
 
     private fun detectPosesOnDevice(
@@ -33,14 +31,13 @@ class PoseDetector : Detector() {
         options: PoseOptions = PoseOptions()
     ) {
         val realOptions = AccuratePoseDetectorOptions.Builder()
-            .setExecutor(options.analysisDispatcher.coroutineDispatcher.asExecutor())
+            .setExecutor(options.analysisDispatcher.dispatch.asExecutor())
 
         startDetectorActivity<LocalPoseAnalyzer, PoseDetector, PoseDetectorOptionsBase, ImageProxy, List<PoseLandmark>>(
             context,
-            realOptions.build(),
-            { results ->
-                onNextResult(results.map { it.toDetectedPose() })
-            }
-        )
+            realOptions.build()
+        ) { results ->
+            onNextResult(results.map { it.toDetectedPose() })
+        }
     }
 }

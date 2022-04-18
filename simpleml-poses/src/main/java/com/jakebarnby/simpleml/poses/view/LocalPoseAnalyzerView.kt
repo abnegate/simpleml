@@ -47,8 +47,7 @@ class LocalPoseAnalyzerView : Camera2View<PoseDetector,
         super.init(attrs)
 
         setAnalyzer<LocalPoseAnalyzer>(
-            (options as PoseOptions)
-                .toPoseDetectorOptions()
+            (options as PoseOptions).toPoseDetectorOptions()
         )
     }
 

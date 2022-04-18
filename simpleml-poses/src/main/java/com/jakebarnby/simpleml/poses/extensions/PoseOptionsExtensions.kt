@@ -6,6 +6,6 @@ import kotlinx.coroutines.asExecutor
 
 object PoseOptionsExtensions {
     fun PoseOptions.toPoseDetectorOptions() = AccuratePoseDetectorOptions.Builder()
-        .setExecutor(analysisDispatcher.coroutineDispatcher.asExecutor())
+        .setExecutor(analysisDispatcher.dispatch.asExecutor())
         .build()
 }
