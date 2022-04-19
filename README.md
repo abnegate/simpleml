@@ -1,6 +1,8 @@
 # SimpleML
 
-### Simplifies machine learning integration by wrapping multiple analysis methods into one easy to use interface
+![simpleml_cover](https://simpleml-resources.s3.amazonaws.com/simpleml_banner.png)
+
+### Simplifies machine learning by providing framework to easily detect object, text or poses in an image
 
 Machine Learning integrations can be difficult and time consuming to set up, with a lot of boiler plate code and domain-specific knowledge required. With SimpleML you just need to choose what you want to detect, and detect it.
 
